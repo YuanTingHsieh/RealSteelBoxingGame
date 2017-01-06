@@ -3,10 +3,14 @@
 #### Can run successfully on Windows 10 and Ubuntu 14.04 with Qt 5.7.1 and QtCreator 4.1.0 and latest V-play 2.9.2
 
 
+![Image of Homepage](https://github.com/YuanTingHsieh/ESL/blob/master/demos/homepage.JPG)
+
 ## Description
  - This is a interactive boxing game for two players.
  - One game screen showing the fighting process of two players.
  - Each player have two types of punching, left or right.
+ 
+ ![Image of gamepage](https://github.com/YuanTingHsieh/ESL/blob/master/demos/game.JPG)
 
 ## Setup
  1. Install V-Play GameEngine from [their website](https://v-play.net/), it is based on Qt
