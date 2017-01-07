@@ -46,10 +46,16 @@ Common.LevelBase {
         }
     }
 
-    Common.Enemy {
+//    Common.Enemy {
+//        id: zeus
+//        source: "../img/zeus_1500_burned.png"
+//        width: 200
+//        height: 200
+//        anchors.horizontalCenterOffset:  150
+//    }
+    Common.Atom {
         id: zeus
-        source: "../img/zeus_1500_burned.png"
-        width: 200
+        width: 110
         height: 200
         anchors.horizontalCenterOffset:  150
     }
@@ -96,6 +102,7 @@ Common.LevelBase {
         punchMusic.play()
         right_punching_left.start()
         right_red_screen.start()
+        zeus.clockRotate()
     }
 
     function handleRight_2() {
@@ -103,6 +110,7 @@ Common.LevelBase {
         punchMusic.play()
         right_punching_right.start()
         right_red_screen.start()
+        zeus.clockRotate()
     }
 
     SequentialAnimation {
