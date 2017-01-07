@@ -11,7 +11,7 @@ SceneBase {
     // background
     Rectangle {
         anchors.fill: parent.gameWindowAnchorItem
-        color: "#ece468"
+        //color: "#ece468"
         Image {
             source: '../img/mode_select.jpg'
             anchors.fill: parent

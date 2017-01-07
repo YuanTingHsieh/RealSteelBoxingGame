@@ -8,7 +8,6 @@ SceneBase {
     // background
     Rectangle {
         anchors.fill: parent.gameWindowAnchorItem
-        color: "#49a349"
         Image {
             source: '../img/noisy_boy.jpg'
             anchors.fill: parent
@@ -36,6 +35,11 @@ SceneBase {
         }
         Text {
             text: "Embedding System Lab Final Project, Sep. 2016"
+            color: "white"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+        Text {
+            text: "We do not own these pictures and musics"
             color: "white"
             anchors.horizontalCenter: parent.horizontalCenter
         }

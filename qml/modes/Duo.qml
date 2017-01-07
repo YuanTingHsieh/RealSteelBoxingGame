@@ -20,93 +20,6 @@ Common.LevelBase {
         source: "../img/punch2.wav"
     }
 
-
-    function handleLeft() {
-        leftPunchPressed()
-        punchMusic.play()
-        punching_left.start()
-    }
-
-    function handleLeft_2() {
-        leftPunchPressed()
-        punchMusic.play()
-        punching_right.start()
-    }
-
-    SequentialAnimation {
-        id: punching_left
-        ParallelAnimation {
-            NumberAnimation {
-                target: left_punch_zeus
-                property: "anchors.horizontalCenterOffset"
-                to: -120
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: left_punch_zeus
-                property: "anchors.verticalCenterOffset"
-                to: 0
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-        ParallelAnimation {
-            NumberAnimation {
-                target: left_punch_zeus
-                property: "anchors.horizontalCenterOffset"
-                to: -190
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: left_punch_zeus
-                property: "anchors.verticalCenterOffset"
-                to: 110
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-
-    }
-
-    SequentialAnimation {
-        id: punching_right
-        ParallelAnimation {
-            NumberAnimation {
-                target: right_punch_zeus
-                property: "anchors.horizontalCenterOffset"
-                to: -120
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: right_punch_zeus
-                property: "anchors.verticalCenterOffset"
-                to: 0
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-        ParallelAnimation {
-            NumberAnimation {
-                target: right_punch_zeus
-                property: "anchors.horizontalCenterOffset"
-                to: -90
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: right_punch_zeus
-                property: "anchors.verticalCenterOffset"
-                to: 110
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-
-    }
-
     Common.Punch {
         id: left_punch_zeus
         anchors.horizontalCenterOffset:  -190
@@ -149,7 +62,7 @@ Common.LevelBase {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: rightPunchPressed()
+            onPressed: handleRight()
         }
     }
 
@@ -160,8 +73,184 @@ Common.LevelBase {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: rightPunchPressed()
+            onPressed: handleRight_2()
         }
+    }
+
+    function handleLeft() {
+        leftPunchPressed()
+        punchMusic.play()
+        left_punching_left.start()
+        left_red_screen.start()
+    }
+
+    function handleLeft_2() {
+        leftPunchPressed()
+        punchMusic.play()
+        left_punching_right.start()
+        left_red_screen.start()
+    }
+
+    function handleRight() {
+        rightPunchPressed()
+        punchMusic.play()
+        right_punching_left.start()
+        right_red_screen.start()
+    }
+
+    function handleRight_2() {
+        rightPunchPressed()
+        punchMusic.play()
+        right_punching_right.start()
+        right_red_screen.start()
+    }
+
+    SequentialAnimation {
+        id: right_punching_left
+        ParallelAnimation {
+            NumberAnimation {
+                target: left_punch_atom
+                property: "anchors.horizontalCenterOffset"
+                to: 150
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: left_punch_atom
+                property: "anchors.verticalCenterOffset"
+                to: 0
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+        ParallelAnimation {
+            NumberAnimation {
+                target: left_punch_atom
+                property: "anchors.horizontalCenterOffset"
+                to: 90
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: left_punch_atom
+                property: "anchors.verticalCenterOffset"
+                to: 110
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+    }
+
+    SequentialAnimation {
+        id: right_punching_right
+        ParallelAnimation {
+            NumberAnimation {
+                target: right_punch_atom
+                property: "anchors.horizontalCenterOffset"
+                to: 150
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: right_punch_atom
+                property: "anchors.verticalCenterOffset"
+                to: 0
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+        ParallelAnimation {
+            NumberAnimation {
+                target: right_punch_atom
+                property: "anchors.horizontalCenterOffset"
+                to: 190
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: right_punch_atom
+                property: "anchors.verticalCenterOffset"
+                to: 110
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+    }
+
+    SequentialAnimation {
+        id: left_punching_left
+        ParallelAnimation {
+            NumberAnimation {
+                target: left_punch_zeus
+                property: "anchors.horizontalCenterOffset"
+                to: -120
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: left_punch_zeus
+                property: "anchors.verticalCenterOffset"
+                to: 0
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+        ParallelAnimation {
+            NumberAnimation {
+                target: left_punch_zeus
+                property: "anchors.horizontalCenterOffset"
+                to: -190
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: left_punch_zeus
+                property: "anchors.verticalCenterOffset"
+                to: 110
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+    }
+
+    SequentialAnimation {
+        id: left_punching_right
+        ParallelAnimation {
+            NumberAnimation {
+                target: right_punch_zeus
+                property: "anchors.horizontalCenterOffset"
+                to: -120
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: right_punch_zeus
+                property: "anchors.verticalCenterOffset"
+                to: 0
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+        ParallelAnimation {
+            NumberAnimation {
+                target: right_punch_zeus
+                property: "anchors.horizontalCenterOffset"
+                to: -90
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+            NumberAnimation {
+                target: right_punch_zeus
+                property: "anchors.verticalCenterOffset"
+                to: 110
+                duration: 100
+                easing.type: Easing.InOutQuad
+            }
+        }
+
     }
 
     SequentialAnimation {

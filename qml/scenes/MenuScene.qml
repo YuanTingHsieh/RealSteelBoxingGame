@@ -13,7 +13,7 @@ SceneBase {
     // background
     Rectangle {
         anchors.fill: parent.gameWindowAnchorItem
-        color: "#47688e"
+        //color: "#47688e"
         Image {
             source: '../img/real-steel.jpg'
             anchors.fill: parent

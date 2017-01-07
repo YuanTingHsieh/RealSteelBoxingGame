@@ -17,4 +17,19 @@ Rectangle {
         font.pixelSize: 40
         text: parent.score
     }
+
+//    Rectangle {
+//         width: parent.width<parent.height?parent.width:parent.height
+//         height: width
+//         color: "red"
+//         //border.color: "black"
+//         //border.width: 1
+//         radius: width*0.5
+//         Text {
+//              anchors.fill: parent
+//              color: "red"
+//              text: "Boom"
+//         }
+//    }
+
 }

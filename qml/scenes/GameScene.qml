@@ -1,6 +1,8 @@
 import VPlay 2.0
 import QtQuick 2.0
 import "../common"
+import QtGraphicalEffects 1.0
+import QtMultimedia 5.5
 
 SceneBase {
     id:gameScene
@@ -26,12 +28,36 @@ SceneBase {
         objectName: "Arena"
         score: leftScore
         anchors.left: gameScene.gameWindowAnchorItem.left
+        Rectangle {
+            id: left_mask
+            anchors.fill: parent
+            opacity: 0
+            RadialGradient {
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "white" }
+                    GradientStop { position: 0.5; color: "red" }
+                }
+            }
+        }
     }
 
     OneArena {
         id: rightfield
         score: rightScore
         anchors.right: gameScene.gameWindowAnchorItem.right
+        Rectangle {
+            id: right_mask
+            anchors.fill: parent
+            opacity: 0
+            RadialGradient {
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "white" }
+                    GradientStop { position: 0.5; color: "red" }
+                }
+            }
+        }
     }
 
     // back button to leave scene
@@ -75,7 +101,7 @@ SceneBase {
             // store the loaded level as activeLevel for easier access
             activeLevel = item
             // restarts the countdown
-            countdown = 3
+            countdown = 4
         }
         signal punchHit (int punchType)
         onPunchHit: {
@@ -125,6 +151,25 @@ SceneBase {
         enabled: visible
     }
 
+    SoundEffect {
+        id: one_sound
+        source: "../img/one.wav"
+    }
+
+    SoundEffect {
+        id: two_sound
+        source: "../img/two.wav"
+    }
+
+    SoundEffect {
+        id: three_sound
+        source: "../img/three.wav"
+    }
+
+    SoundEffect {
+        id: fight_sound
+        source: "../img/fight.wav"
+    }
 
     NumberAnimation {
         id: animateSize
@@ -142,13 +187,37 @@ SceneBase {
         running: countdown > -1
         onTriggered: {
             countdown--
+            playCountDown()
             animateSize.start()
+        }
+    }
+
+    function playCountDown() {
+        if (countdown == 3)
+        {
+            three_sound.play()
+        }
+        else if (countdown == 2)
+        {
+            two_sound.play()
+        }
+        else if (countdown == 1)
+        {
+            one_sound.play()
+        }
+        else if (countdown == 0)
+        {
+            fight_sound.play()
         }
     }
 
     function getText() {
         var theText = ""
-        if (countdown > 0 )
+        if (countdown == 4)
+        {
+            theText = ""
+        }
+        else if (countdown > 0 )
         {
             theText = countdown
         }
@@ -162,5 +231,41 @@ SceneBase {
         }
 
         return theText
+    }
+
+    SequentialAnimation {
+        id: left_red_screen
+        NumberAnimation {
+            target: left_mask
+            property: "opacity"
+            to: 0.5
+            duration: 100
+            easing.type: Easing.InOutQuad
+        }
+        NumberAnimation {
+            target: left_mask
+            property: "opacity"
+            to: 0
+            duration: 100
+            easing.type: Easing.InOutQuad
+        }
+    }
+
+    SequentialAnimation {
+        id: right_red_screen
+        NumberAnimation {
+            target: right_mask
+            property: "opacity"
+            to: 0.5
+            duration: 100
+            easing.type: Easing.InOutQuad
+        }
+        NumberAnimation {
+            target: right_mask
+            property: "opacity"
+            to: 0
+            duration: 100
+            easing.type: Easing.InOutQuad
+        }
     }
 }
