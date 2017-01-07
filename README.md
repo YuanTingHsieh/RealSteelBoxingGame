@@ -12,12 +12,17 @@
  
  ![Image of gamepage](https://github.com/YuanTingHsieh/ESL/blob/master/demos/game.JPG)
 
-## Setup
+## Setup of Qt screen
  1. Install V-Play GameEngine from [their website](https://v-play.net/), it is based on Qt
  2. Make sure your network is working!
  3. Launch your Qt creator
  4. Choose Open project -> open try.pro
  5. Enjoy!
+ 
+## Setup of Pi with MPU6050
+ 1. The code is included in our [repo](https://github.com/YuanTingHsieh/ESL/tree/master/Pi/MPU6050-Pi-Demo)
+ 2. It is modified from others code, as specified in the [readme](https://github.com/YuanTingHsieh/ESL/blob/master/Pi/MPU6050-Pi-Demo/README)
+ 3. [Some useful blogposts](https://blog.gtwang.org/iot/raspberry-pi-read-data-from-mpu6050-using-cpp/) to help identify the connection problem
 
 ## Settings
  - Each of the player will have a pair of boxing gloves
