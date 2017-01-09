@@ -23,6 +23,7 @@ SceneBase {
     // the "logo"
     Text {
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 10
         y: 30
         font.pixelSize: 40
         color: "#e9e9e9"
@@ -33,6 +34,7 @@ SceneBase {
     // menu
     Column {
         anchors.centerIn: parent
+        anchors.topMargin: 20
         spacing: 10
         MenuButton {
             text: "Modes"

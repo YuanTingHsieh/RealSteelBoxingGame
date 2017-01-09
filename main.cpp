@@ -77,7 +77,12 @@ int main(int argc, char *argv[])
 //    qDebug() << "QML function returned:" << returnedValue.toString();
     Server server(0, 8888);
     // QObject::connect(object_arena, SIGNAL(arenaClicked()), &server, SLOT(setValue()) );
-    QObject::connect(&server, SIGNAL(valueChanged(int)), object, SIGNAL(punchHit(int)));
+    QObject::connect(&server, SIGNAL(punchChanged(int)), object, SIGNAL(punchHit(int)));
+    QObject::connect(&server, SIGNAL(actionChanged(int)), object, SIGNAL(actionTake(int)));
+
+    Server server_zeus(0, 7777);
+    QObject::connect(&server_zeus, SIGNAL(punchChanged(int)), object, SIGNAL(punchHit_zeus(int)));
+    QObject::connect(&server_zeus, SIGNAL(actionChanged(int)), object, SIGNAL(actionTake_zeus(int)));
 
     //return 0;
     return app.exec();

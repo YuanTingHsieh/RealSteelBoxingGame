@@ -72,6 +72,7 @@ SceneBase {
             backButtonPressed()
             activeLevel = undefined
             activeLevelFileName = ""
+            countdown = -1
         }
     }
 
@@ -104,6 +105,10 @@ SceneBase {
             countdown = 4
         }
         signal punchHit (int punchType)
+        signal actionTake (int actionType)
+        signal punchHit_zeus (int punchType)
+        signal actionTake_zeus (int actionType)
+
         onPunchHit: {
             if (gameRunning) {
                 if (punchType == 0)
@@ -114,6 +119,28 @@ SceneBase {
                 {
                     item.handleLeft_2()
                 }
+            }
+        }
+        onPunchHit_zeus: {
+            if (gameRunning) {
+                if (punchType == 0)
+                {
+                    item.handleRight()
+                }
+                else if (punchType ==1)
+                {
+                    item.handleRight_2()
+                }
+            }
+        }
+        onActionTake: {
+            if (gameRunning) {
+                    item.handleState(actionType)
+            }
+        }
+        onActionTake_zeus: {
+            if (gameRunning) {
+                    item.handleState_(actionType)
             }
         }
     }
