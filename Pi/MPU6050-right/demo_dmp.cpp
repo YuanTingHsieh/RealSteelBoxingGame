@@ -19,7 +19,11 @@
 #include <bluetooth/rfcomm.h>
 #include <bluetooth/sdp_lib.h>
 #include <bluetooth/bluetooth.h>
+#include <bluetooth/hci.h>
+#include <bluetooth/hci_lib.h>
+extern "C" {
 #include "spp-sdp-register.h"
+}
 
 // class default I2C address is 0x68
 // specific I2C addresses may be passed as a parameter here
@@ -141,7 +145,7 @@ void setup() {
 // ===                    MAIN PROGRAM LOOP                     ===
 // ================================================================
 
-void loop(int& sock, int* deBounce, int* sideCounter, int& side, int& rfcommsock) {
+void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
     // if programming failed, don't try to do anything
     if (!dmpReady) return;
     // get current FIFO count
@@ -179,31 +183,70 @@ void loop(int& sock, int* deBounce, int* sideCounter, int& side, int& rfcommsock
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             printf("ypr  %7.2f %7.2f %7.2f    ", ypr[0] * 180/M_PI, ypr[1] * 180/M_PI, ypr[2] * 180/M_PI);
-            float yprUse = ypr[1]*180/M_PI;
-	    int sideThreshold = 3;
+            // detect side, left = =1 , right = 1
+	    float yprUse = ypr[1]*180/M_PI;
+	    float sideDeg = 15.0;
 	    //printf("\n yprUse = %7.2f \n", yprUse);
-	    if (yprUse < -15.0) {
-		sideCounter[1] = 0;
-		sideCounter[0] += 1;
-		//printf("\n left side add 1, sideCounter[0]=%d \n", sideCounter[0]);
-		if (sideCounter[0] > sideThreshold) {
-			side = -1;
-			printf("\n side = -1\n");
+	    if (yprUse < -sideDeg) {
+		//printf("\n left side add 1, sideCounter[0]=%d \n", sideCounter[0])
+		if (side != -1) {
+			char message[100] = "Side=left";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change side to left!");
+			//sleep(0.1);//delay(100);
 		}
-	    } else if (yprUse > 15.0){
-	    	sideCounter[0] = 0;
-		sideCounter[1] += 1;
+		side = -1;
+		//printf("\n side = -1\n");
+	    } else if (yprUse > sideDeg){
 		//printf("\n right side add 1, sideCounter[1]=%d \n", sideCounter[1]);
-		if (sideCounter[1] > sideThreshold) {
-			side = 1;
-			printf("\n side = 1\n");
+		if (side != 1) {
+			char message[100] = "Side=right";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change side to right!");
+			//sleep(0.1);//delay(100);
 		}
+		side = 1;
+		//printf("\n side = 1\n");
 	    } else {
-		sideCounter[0] = 0;
-		sideCounter[1] = 0;
+		if (side != 0) {
+			char message[100] = "Side=middle";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change side to middle!");
+			//sleep(0.1);//delay(100);
+		}
 		side = 0;
+		
 	    }
-	
+	    // detect attack or defense, 0 for attack and 1 for defense
+	    float yprAction = ypr[2]*180/M_PI;
+	    int ActionDeg = -30;
+	    if ( yprAction < -30) {
+		if (defense != 1) {
+			char message[100] = "Action=defense";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change action to defense!");
+			//sleep(0.1);//delay(100);
+		}
+		defense = 1;	
+	    } else {
+		if (defense != 0) {
+			char message[100] = "Action=attack";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change action to attack!");
+			//sleep(0.1);//delay(100);
+		}
+		defense = 0;
+	    }
 	#endif
 
         #ifdef OUTPUT_READABLE_REALACCEL
@@ -221,7 +264,7 @@ void loop(int& sock, int* deBounce, int* sideCounter, int& side, int& rfcommsock
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
 			if(deBounce[0] > deBounce[2]+500) {
 				printf("\n @@@ Right Hand HIT!");
-				char message[1000] = "Right";
+				char message[100] = "Right";
 				if ( send(sock, message, strlen(message), 0) < 0 ) {
 					puts("Send Failed!");
 				}
@@ -238,7 +281,13 @@ void loop(int& sock, int* deBounce, int* sideCounter, int& side, int& rfcommsock
 		} else if (len > 0)
 		{
 			rfcommbuffer[len] = '\0';
-			printf("\n @@@ %s", rfcommbuffer);
+			printf("\n @@@ Left Hand HIT!"); //  %s", rfcommbuffer);
+			char message[100] = "Left";
+			if ( send(sock, message, strlen(message), 0) < 0 ){
+				puts("Send FAILED");
+			}		
+
+			sleep(0.1);
 			//send(rfcommsock, "ATOK\r\n", 6, 0);
 		}
 // Part for wire connect between two mobile devices using WiringPi Library
@@ -341,7 +390,8 @@ int rfcomm_listen(uint8_t channel)
 	local.rc_family = AF_BLUETOOTH;
 	// 如果使用 Bluetooth USB Dongle 的位址已知，可直接在 rd_bdaddr 輸入位址
 	// 不然就輸入 *BDADDR_ANY ( 由系統自己選擇 )
-	local.rc_bdaddr = *BDADDR_ANY;
+	bdaddr_t temp = {0,0,0,0,0,0};//{0xB8,0x27,0xEB,0xC6,0xD3,0xEE};
+	local.rc_bdaddr = temp; //*BDADDR_ANY;
 	local.rc_channel = channel;
 	// 綁定 socket 到藍牙裝置 ( 這裡指的是 Bluetooth USB Dongle )
 	if (bind(sock, (struct sockaddr *)&local, sizeof(struct sockaddr_rc)) < 0)
@@ -420,10 +470,11 @@ int main(int argc, char *argv[]) {
 
     usleep(100000);
     int deBounce[4] = {0,0,0,0};
-    int sideCounter[2] = {0,0};
+    //int sideCounter[2] = {0,0};
     int side = 0;
+    int defense = 0;
     for (;;)
-        loop(sock, deBounce, sideCounter, side, rfcommsock);
+        loop(sock, deBounce, side, defense, rfcommsock);
 
     return 0;
 }

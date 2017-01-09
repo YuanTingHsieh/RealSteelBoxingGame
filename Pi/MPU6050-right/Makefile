@@ -2,9 +2,9 @@
 
 all: demo_dmp
 
-HDRS = helper_3dmath.h I2Cdev.h MPU6050_6Axis_MotionApps20.h MPU6050.h
+HDRS = helper_3dmath.h I2Cdev.h MPU6050_6Axis_MotionApps20.h MPU6050.h spp-sdp-register.h
 CMN_OBJS = I2Cdev.o MPU6050.o
-DMP_OBJS = demo_dmp.o spp-sdp-register.o
+DMP_OBJS = demo_dmp.o
 
 LD=g++
 LD_FLAGS+= -lbluetooth
@@ -18,12 +18,13 @@ CXXFLAGS = -DDMP_FIFO_RATE=9 -Wall -g -O2 `pkg-config gtkmm-3.0 --cflags --libs`
 
 $(CMN_OBJS) $(DMP_OBJS) : $(HDRS)
 
-demo_dmp: $(CMN_OBJS) $(DMP_OBJS)
-	$(LD) $^ $(LD_FLAGS) -o $@
-%.o: %.c
-	$(CC) -c $<
-%.o: %.cpp
-	$(CXX) $(C_FLAGS) -c $<
+demo_dmp: $(CMN_OBJS) $(DMP_OBJS) spp-sdp-register.o
+	$(CXX) -o $@ $^ -lbluetooth
+#	$(LD) $^ $(LD_FLAGS) -o $@
+#%.o: %.c
+#	$(CC) -c $<
+#%.o: %.cpp
+#	$(CXX) $(C_FLAGS) -c $<
 	#$(CXX) -o $@ $^ -lm -lbluetooth
 
 clean:
