@@ -213,7 +213,7 @@ void loop(int* deBounce, int* sideCounter, int& side, int& rfcommsock) {
             printf("areal %6d %6d %6d ", aaReal.x, aaReal.y, aaReal.z);
 	    
 	    #ifdef CHECK_HIT
-		int threshold = 5000;
+		int threshold = 4000;
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);

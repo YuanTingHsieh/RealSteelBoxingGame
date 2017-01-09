@@ -46,13 +46,13 @@ Common.LevelBase {
         }
     }
 
-//    Common.Enemy {
-//        id: zeus
-//        source: "../img/zeus_1500_burned.png"
-//        width: 200
-//        height: 200
-//        anchors.horizontalCenterOffset:  150
-//    }
+    //    Common.Enemy {
+    //        id: zeus
+    //        source: "../img/zeus_1500_burned.png"
+    //        width: 200
+    //        height: 200
+    //        anchors.horizontalCenterOffset:  150
+    //    }
     Common.Atom {
         id: zeus
         width: 110
@@ -88,6 +88,7 @@ Common.LevelBase {
         punchMusic.play()
         left_punching_left.start()
         left_red_screen.start()
+        zeus.state = "defense"
     }
 
     function handleLeft_2() {
@@ -95,6 +96,7 @@ Common.LevelBase {
         punchMusic.play()
         left_punching_right.start()
         left_red_screen.start()
+        zeus.state = "left_def"
     }
 
     function handleRight() {
@@ -102,7 +104,8 @@ Common.LevelBase {
         punchMusic.play()
         right_punching_left.start()
         right_red_screen.start()
-        zeus.clockRotate()
+        //zeus.bendLeft()
+        zeus.state = "bend_left"
     }
 
     function handleRight_2() {
@@ -110,7 +113,7 @@ Common.LevelBase {
         punchMusic.play()
         right_punching_right.start()
         right_red_screen.start()
-        zeus.clockRotate()
+        zeus.state = "original"
     }
 
     SequentialAnimation {
@@ -261,49 +264,49 @@ Common.LevelBase {
 
     }
 
-    SequentialAnimation {
-        running: true
-        // let it run forever
-        loops: Animation.Infinite
-        // move the rectangle left by changing the offset from current (120) to -120
-        NumberAnimation {
-            target: atom
-            property: "anchors.horizontalCenterOffset"
-            duration: 1000
-            easing.type: Easing.InOutQuad
-            to: -160
-        }
-        // after moving left has finished, we move the rectangle right by changing the offset from current (-120) to 120
-        NumberAnimation {
-            target: atom
-            duration: 1000
-            property: "anchors.horizontalCenterOffset"
-            easing.type: Easing.InOutQuad
-            to: -120
-        }
-    }
+//    SequentialAnimation {
+//        running: true
+//        // let it run forever
+//        loops: Animation.Infinite
+//        // move the rectangle left by changing the offset from current (120) to -120
+//        NumberAnimation {
+//            target: atom
+//            property: "anchors.horizontalCenterOffset"
+//            duration: 1000
+//            easing.type: Easing.InOutQuad
+//            to: -160
+//        }
+//        // after moving left has finished, we move the rectangle right by changing the offset from current (-120) to 120
+//        NumberAnimation {
+//            target: atom
+//            duration: 1000
+//            property: "anchors.horizontalCenterOffset"
+//            easing.type: Easing.InOutQuad
+//            to: -120
+//        }
+//    }
 
-    SequentialAnimation {
-        running: true
-        // let it run forever
-        loops: Animation.Infinite
-        // move the rectangle left by changing the offset from current (120) to -120
-        NumberAnimation {
-            target: zeus
-            property: "anchors.horizontalCenterOffset"
-            duration: 1000
-            easing.type: Easing.InOutQuad
-            to: 120
-        }
-        // after moving left has finished, we move the rectangle right by changing the offset from current (-120) to 120
-        NumberAnimation {
-            target: zeus
-            duration: 1000
-            property: "anchors.horizontalCenterOffset"
-            easing.type: Easing.InOutQuad
-            to: 150
-        }
-    }
+//    SequentialAnimation {
+//        running: true
+//        // let it run forever
+//        loops: Animation.Infinite
+//        // move the rectangle left by changing the offset from current (120) to -120
+//        NumberAnimation {
+//            target: zeus
+//            property: "anchors.horizontalCenterOffset"
+//            duration: 1000
+//            easing.type: Easing.InOutQuad
+//            to: 120
+//        }
+//        // after moving left has finished, we move the rectangle right by changing the offset from current (-120) to 120
+//        NumberAnimation {
+//            target: zeus
+//            duration: 1000
+//            property: "anchors.horizontalCenterOffset"
+//            easing.type: Easing.InOutQuad
+//            to: 150
+//        }
+//    }
 
 
 }
