@@ -9,21 +9,15 @@
 
 // CSWu+ Socket Communication for pi and host
 //#include<sys/socket.h> 
-#include<arpa/inet.h>
+//#include<arpa/inet.h>
 
 // CSWu+ Bluetooth Communication 
 #include <errno.h>
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <bluetooth/sdp.h>
-#include <bluetooth/rfcomm.h>
-#include <bluetooth/sdp_lib.h>
 #include <bluetooth/bluetooth.h>
-#include <bluetooth/hci.h>
-#include <bluetooth/hci_lib.h>
-extern "C" {
-#include "spp-sdp-register.h"
-}
+#include <bluetooth/sdp.h>
+#include <bluetooth/sdp_lib.h>
+#include <sys/socket.h>
+#include <bluetooth/rfcomm.h>
 
 // class default I2C address is 0x68
 // specific I2C addresses may be passed as a parameter here
@@ -145,7 +139,7 @@ void setup() {
 // ===                    MAIN PROGRAM LOOP                     ===
 // ================================================================
 
-void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
+void loop(int* deBounce, int* sideCounter, int& side, int& rfcommsock) {
     // if programming failed, don't try to do anything
     if (!dmpReady) return;
     // get current FIFO count
@@ -183,70 +177,31 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             printf("ypr  %7.2f %7.2f %7.2f    ", ypr[0] * 180/M_PI, ypr[1] * 180/M_PI, ypr[2] * 180/M_PI);
-            // detect side, left = =1 , right = 1
-	    float yprUse = ypr[1]*180/M_PI;
-	    float sideDeg = 15.0;
+            float yprUse = ypr[1]*180/M_PI;
+	    int sideThreshold = 3;
 	    //printf("\n yprUse = %7.2f \n", yprUse);
-	    if (yprUse < -sideDeg) {
-		//printf("\n left side add 1, sideCounter[0]=%d \n", sideCounter[0])
-		if (side != -1) {
-			char message[100] = "Side=left";
-			if ( send(sock, message, strlen(message), 0) < 0 ) {
-				puts("Send Failed!");
-			}
-			printf("\n change side to left!");
-			//sleep(0.1);//delay(100);
+	    if (yprUse < -15.0) {
+		sideCounter[1] = 0;
+		sideCounter[0] += 1;
+		//printf("\n left side add 1, sideCounter[0]=%d \n", sideCounter[0]);
+		if (sideCounter[0] > sideThreshold) {
+			side = -1;
+		//	printf("\n side = -1\n");
 		}
-		side = -1;
-		//printf("\n side = -1\n");
-	    } else if (yprUse > sideDeg){
+	    } else if (yprUse > 15.0){
+	    	sideCounter[0] = 0;
+		sideCounter[1] += 1;
 		//printf("\n right side add 1, sideCounter[1]=%d \n", sideCounter[1]);
-		if (side != 1) {
-			char message[100] = "Side=right";
-			if ( send(sock, message, strlen(message), 0) < 0 ) {
-				puts("Send Failed!");
-			}
-			printf("\n change side to right!");
-			//sleep(0.1);//delay(100);
+		if (sideCounter[1] > sideThreshold) {
+			side = 1;
+		//	printf("\n side = 1\n");
 		}
-		side = 1;
-		//printf("\n side = 1\n");
 	    } else {
-		if (side != 0) {
-			char message[100] = "Side=middle";
-			if ( send(sock, message, strlen(message), 0) < 0 ) {
-				puts("Send Failed!");
-			}
-			printf("\n change side to middle!");
-			//sleep(0.1);//delay(100);
-		}
+		sideCounter[0] = 0;
+		sideCounter[1] = 0;
 		side = 0;
-		
 	    }
-	    // detect attack or defense, 0 for attack and 1 for defense
-	    float yprAction = ypr[2]*180/M_PI;
-	    int ActionDeg = -30;
-	    if ( yprAction < -30) {
-		if (defense != 1) {
-			char message[100] = "Action=defense";
-			if ( send(sock, message, strlen(message), 0) < 0 ) {
-				puts("Send Failed!");
-			}
-			printf("\n change action to defense!");
-			//sleep(0.1);//delay(100);
-		}
-		defense = 1;	
-	    } else {
-		if (defense != 0) {
-			char message[100] = "Action=attack";
-			if ( send(sock, message, strlen(message), 0) < 0 ) {
-				puts("Send Failed!");
-			}
-			printf("\n change action to attack!");
-			//sleep(0.1);//delay(100);
-		}
-		defense = 0;
-	    }
+	
 	#endif
 
         #ifdef OUTPUT_READABLE_REALACCEL
@@ -258,39 +213,27 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
             printf("areal %6d %6d %6d ", aaReal.x, aaReal.y, aaReal.z);
 	    
 	    #ifdef CHECK_HIT
-		int threshold = 5000;
+		int threshold = 4000;
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
 			if(deBounce[0] > deBounce[2]+500) {
-				printf("\n @@@ Right Hand HIT!");
-				char message[100] = "Right";
-				if ( send(sock, message, strlen(message), 0) < 0 ) {
-					puts("Send Failed!");
+				printf("\n @@@ Hand HIT!");
+/*
+				char message[1000] = "Right";
+				if ( send(sock, message, strlen(message), 0) < 0 ){
+					puts("Send FAILED");
+				}	
+*/
+				int status = send(rfcommsock, "hit", 6, 0);
+				if(status < 0){
+					perror("ERROR, rfcomm send failed.\n");
 				}
+
 				sleep(0.1);//delay(100);
 				deBounce[2] = deBounce[0];	
 			}
 		}
-		
-		char rfcommbuffer[255];
-		int len = recv(rfcommsock, rfcommbuffer, 255, 0);
-		if (len < 0 && errno != EWOULDBLOCK) {
-			perror("ERROR rfcomm recv ");
-			//break;
-		} else if (len > 0)
-		{
-			rfcommbuffer[len] = '\0';
-			printf("\n @@@ Left Hand HIT!"); //  %s", rfcommbuffer);
-			char message[100] = "Left";
-			if ( send(sock, message, strlen(message), 0) < 0 ){
-				puts("Send FAILED");
-			}		
-
-			sleep(0.1);
-			//send(rfcommsock, "ATOK\r\n", 6, 0);
-		}
-// Part for wire connect between two mobile devices using WiringPi Library
 /*
 	  	if (wiringPiSetup () == -1){
     			printf("@@@@@@@@@@@@@@@@@@@@@@@@@@ WiringPi Setup Failed!!");	
@@ -344,79 +287,11 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
     }
 }
 
-// Functions for Bluetooth
-int set_class(unsigned int cls, int timeout)
-{
-    int id;
-    int fh;
-    bdaddr_t btaddr;
-    char pszaddr[18];
-	// 取得裝置 ID
-	// 使用 NULL 作為參數，函式成功回傳的
-	// 所取得的 ID，就是第一個藍牙裝置 ID 
-	if ((id = hci_get_route(NULL)) < 0)
-		return -1;
-	// 轉換藍牙裝置 ID 為 6-byte 藍牙位址
-	if (hci_devba(id, &btaddr) < 0)
-		return -1;
-	// 轉換 6-byte 藍牙位址為一般以 '\0' 作結尾的字串
-	if (ba2str(&btaddr, pszaddr) < 0)
-		return -1;
-	// 取得 HCI 的 file handle
-	if ((fh = hci_open_dev(id)) < 0)
-		return -1;
-	// 設定藍牙裝置的 Class ( CoD )
-	if (hci_write_class_of_dev(fh, cls, timeout) != 0)
-	{
-		perror("hci_write_class ");
-		return -1;
-	}
-	// 關閉 file handle
-	hci_close_dev(fh);
-	printf("set device %s to class: 0x%06x\n", pszaddr, cls);
-	return 0;
-}
-
-int rfcomm_listen(uint8_t channel)
-{
-	int sock;						// socket descriptor for local listener
-	int client;						// socket descriptor for remote client
-	unsigned int len = sizeof(struct sockaddr_rc);
-	struct sockaddr_rc remote;		// local rfcomm socket address
-	struct sockaddr_rc local;		// remote rfcomm socket addres
-	char pszremote[18];
-	// 藍牙 socket 初始化
-	sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
-	local.rc_family = AF_BLUETOOTH;
-	// 如果使用 Bluetooth USB Dongle 的位址已知，可直接在 rd_bdaddr 輸入位址
-	// 不然就輸入 *BDADDR_ANY ( 由系統自己選擇 )
-	bdaddr_t temp = {0,0,0,0,0,0};//{0xB8,0x27,0xEB,0xC6,0xD3,0xEE};
-	local.rc_bdaddr = temp; //*BDADDR_ANY;
-	local.rc_channel = channel;
-	// 綁定 socket 到藍牙裝置 ( 這裡指的是 Bluetooth USB Dongle )
-	if (bind(sock, (struct sockaddr *)&local, sizeof(struct sockaddr_rc)) < 0)
-		return -1;
-	// 設定 listen 序列的長度 ( 通常設為 1 就可以了 )
-	if (listen(sock, 1) < 0)
-		return -1;
-	printf("accepting connections on channel: %d\n", channel);
-	// 接受接入的連線；此連線是一個阻絕式呼叫 ( a blocking call )
-	client = accept(sock, (struct sockaddr *)&remote, &len);
-	ba2str(&remote.rc_bdaddr, pszremote);
-	printf("received connection from: %s\n", pszremote);
-	// 關掉阻絕式呼叫
-	if (fcntl(client, F_SETFL, O_NONBLOCK) < 0)
-		return -1;
-	// 返回 client 端的 sccket descriptor
-	return client;
-}
-
-
 int main(int argc, char *argv[]) {
     setup();
 // Setup for Socket Programming
     //printf("%s, %s \n", argv[0], argv[1]);
- 
+    /*
     if (argc != 2){
     	printf("ERROR! Need <ip of server>!");
 	return 1;
@@ -445,36 +320,45 @@ int main(int argc, char *argv[]) {
 		perror("connect failed. ERROR");
 		return 1;
 	}
-	puts("Connected \n");	  
+	puts("Connected \n");	
+    */
 
-// Setup for Bluetooth Communication: Server
-    	unsigned int cls = 0x1f00;  // Serial Port Profile
-    	int timeout = 1000;
-    	uint8_t channel = 10; 
-    	int rfcommsock;
-	int scosock;
-	if (set_class(cls, timeout) < 0) {
-		perror("set_class ");
-	}
-	if (register_sdp(channel) < 0) {
-		perror("register_sdp ");
+// Setup for Bluetooth Communication
+    struct sockaddr_rc addr = { 0 };
+    int status, rfcommsock;    
+    //char rfcommbuffer[255];
+    char dest[18] = "B8:27:EB:C6:D3:EE";
+    // allocate a socket
+    rfcommsock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
+    // set the connection parameters (who to connect to)
+    addr.rc_family = AF_BLUETOOTH;
+    addr.rc_channel = 10; //get_rfcomm_port_number(dest);
+    str2ba( dest, &addr.rc_bdaddr );
+    //  等幾秒鐘之後再連接到 SPP Server
+    //sleep(5);
+    // 連接 SPP Server
+    status = connect(rfcommsock, (struct sockaddr *)&addr, sizeof(addr));
+	
+    if (status == 0) {
+	status = send(rfcommsock, "hello", 6, 0);
+	if (status < 0) {
+		perror("ERROR rfcomm send ");
+		close(rfcommsock);
 		return -1;
 	}
-	if ((rfcommsock = rfcomm_listen(channel)) < 0) {
-		perror("rfcomm_listen ");
-		return -1;
-	}
- 	//handle_connection(rfcommsock, scosock);
-		
-
+    }
+    else if (status < 0) {
+	perror("FUCK, Bluetooth Connect Failed.");
+	close(rfcommsock);
+	return -1 ;
+    }
 
     usleep(100000);
     int deBounce[4] = {0,0,0,0};
-    //int sideCounter[2] = {0,0};
+    int sideCounter[2] = {0,0};
     int side = 0;
-    int defense = 0;
     for (;;)
-        loop(sock, deBounce, side, defense, rfcommsock);
+        loop(deBounce, sideCounter, side, rfcommsock);
 
     return 0;
 }
