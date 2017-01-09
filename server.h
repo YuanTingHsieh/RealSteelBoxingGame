@@ -19,7 +19,9 @@ public slots:
     void startRead();
 
 signals:
-    void valueChanged(int punchType);
+    void punchChanged(int punchType);
+    void actionChanged(int actionType);
+    //void sideChanged(int sideType);
 
 private:
     int m_value;

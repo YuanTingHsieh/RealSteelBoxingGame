@@ -1,5 +1,6 @@
 #include "server.h"
 #include <iostream>
+#include <string>
 
 Server::Server(QObject* parent, int portNumber): QObject(parent)
 {
@@ -29,19 +30,41 @@ void Server::startRead()
   char buffer[1024] = {0};
   client->read(buffer, client->bytesAvailable());
   std::cout << buffer << std::endl;
+  // "Action=attack"
+  // "Action=defense"
+  // "Side=right"
+  // "Side=middle"
+  // "Side=left"
   //client->close();
-  if (buffer[0]=='L' && buffer[1]=='e' && buffer[2]=='f' && buffer[3]=='t')
+  std::string theSignal(buffer);
+  if (theSignal=="Left")
   {
       std::cout << "Enter left" << std::endl;
-      emit valueChanged(0);
+      emit punchChanged(0);
   }
-  else
+  else if (theSignal=="Right")
   {
       std::cout << "Enter right" << std::endl;
-      emit valueChanged(1);
+      emit punchChanged(1);
+  }
+  if (theSignal=="Action=defense")
+  {
+      emit actionChanged(0);
+  }
+  else if (theSignal=="Action=attack")
+  {
+      emit actionChanged(1);
+  }
+  else if (theSignal=="Side=left")
+  {
+      emit actionChanged(2);
+  }
+  else if (theSignal=="Side=middle")
+  {
+      emit actionChanged(3);
+  }
+  else if (theSignal=="Side=right")
+  {
+      emit actionChanged(4);
   }
 }
-
-//void Server::setValue() {
-//    emit valueChanged();
-//}

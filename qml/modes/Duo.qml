@@ -9,10 +9,10 @@ Common.LevelBase {
 
     Common.Enemy {
         id: atom
-        source: "../img/atom_burned.png"
-        width: 100
+        source: "../img/zeus_burned.png"
+        width: 160
         height: 200
-        anchors.horizontalCenterOffset:  -120
+        anchors.horizontalCenterOffset:  -135
     }
 
     SoundEffect {
@@ -57,14 +57,14 @@ Common.LevelBase {
         id: zeus
         width: 110
         height: 200
-        anchors.horizontalCenterOffset:  150
+        anchors.horizontalCenterOffset:  140
     }
 
-    Common.Punch {
+    Common.Punch_zeus {
         id: left_punch_atom
-        anchors.horizontalCenterOffset:  90
-        mirror: true
-        transform: Rotation { origin.x: 48; origin.y: 48; angle: 45}
+        anchors.horizontalCenterOffset:  70
+        transform: Rotation { origin.x: 48; origin.y: 48; angle: -110}
+
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
@@ -72,14 +72,109 @@ Common.LevelBase {
         }
     }
 
-    Common.Punch {
+    Common.Punch_zeus {
         id: right_punch_atom
-        anchors.horizontalCenterOffset:  190
-        transform: Rotation { origin.x: 48; origin.y: 48; angle: -45}
+        anchors.horizontalCenterOffset:  210
+        transform: Rotation { origin.x: 48; origin.y: 48; angle: 110}
+        mirror: true
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
             onPressed: handleRight_2()
+        }
+    }
+
+    function handleState(actionSide) {
+        if (zeus.state=="defense")
+        {
+            if (actionSide==1) // def att left midle right
+            {
+                zeus.state="original"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="left_def"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="right_def"
+            }
+        }
+        else if (zeus.state=="original")
+        {
+            if (actionSide==0)
+            {
+                zeus.state="defense"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="bend_left"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="bend_right"
+            }
+        }
+        else if (zeus.state=="bend_left")
+        {
+            if (actionSide==0)
+            {
+                zeus.state="left_def"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="original"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="bend_right"
+            }
+        }
+        else if (zeus.state=="bend_right")
+        {
+            if (actionSide==0)
+            {
+                zeus.state="right_def"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="bend_left"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="original"
+            }
+        }
+        else if (zeus.state=="left_def")
+        {
+            if (actionSide==1)
+            {
+                zeus.state="bend_left"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="defense"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="right_def"
+            }
+        }
+        else if (zeus.state=="right_def")
+        {
+            if (actionSide==1)
+            {
+                zeus.state="bend_right"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="left_def"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="defense"
+            }
+
         }
     }
 
@@ -88,7 +183,6 @@ Common.LevelBase {
         punchMusic.play()
         left_punching_left.start()
         left_red_screen.start()
-        zeus.state = "defense"
     }
 
     function handleLeft_2() {
@@ -96,7 +190,6 @@ Common.LevelBase {
         punchMusic.play()
         left_punching_right.start()
         left_red_screen.start()
-        zeus.state = "left_def"
     }
 
     function handleRight() {
@@ -104,8 +197,6 @@ Common.LevelBase {
         punchMusic.play()
         right_punching_left.start()
         right_red_screen.start()
-        //zeus.bendLeft()
-        zeus.state = "bend_left"
     }
 
     function handleRight_2() {
@@ -113,7 +204,6 @@ Common.LevelBase {
         punchMusic.play()
         right_punching_right.start()
         right_red_screen.start()
-        zeus.state = "original"
     }
 
     SequentialAnimation {
@@ -122,7 +212,7 @@ Common.LevelBase {
             NumberAnimation {
                 target: left_punch_atom
                 property: "anchors.horizontalCenterOffset"
-                to: 150
+                to: 130
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
@@ -138,14 +228,14 @@ Common.LevelBase {
             NumberAnimation {
                 target: left_punch_atom
                 property: "anchors.horizontalCenterOffset"
-                to: 90
+                to: 70
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
             NumberAnimation {
                 target: left_punch_atom
                 property: "anchors.verticalCenterOffset"
-                to: 110
+                to: 135
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
@@ -159,7 +249,7 @@ Common.LevelBase {
             NumberAnimation {
                 target: right_punch_atom
                 property: "anchors.horizontalCenterOffset"
-                to: 150
+                to: 130
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
@@ -175,14 +265,14 @@ Common.LevelBase {
             NumberAnimation {
                 target: right_punch_atom
                 property: "anchors.horizontalCenterOffset"
-                to: 190
+                to: 210
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
             NumberAnimation {
                 target: right_punch_atom
                 property: "anchors.verticalCenterOffset"
-                to: 110
+                to: 135
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
@@ -263,50 +353,6 @@ Common.LevelBase {
         }
 
     }
-
-//    SequentialAnimation {
-//        running: true
-//        // let it run forever
-//        loops: Animation.Infinite
-//        // move the rectangle left by changing the offset from current (120) to -120
-//        NumberAnimation {
-//            target: atom
-//            property: "anchors.horizontalCenterOffset"
-//            duration: 1000
-//            easing.type: Easing.InOutQuad
-//            to: -160
-//        }
-//        // after moving left has finished, we move the rectangle right by changing the offset from current (-120) to 120
-//        NumberAnimation {
-//            target: atom
-//            duration: 1000
-//            property: "anchors.horizontalCenterOffset"
-//            easing.type: Easing.InOutQuad
-//            to: -120
-//        }
-//    }
-
-//    SequentialAnimation {
-//        running: true
-//        // let it run forever
-//        loops: Animation.Infinite
-//        // move the rectangle left by changing the offset from current (120) to -120
-//        NumberAnimation {
-//            target: zeus
-//            property: "anchors.horizontalCenterOffset"
-//            duration: 1000
-//            easing.type: Easing.InOutQuad
-//            to: 120
-//        }
-//        // after moving left has finished, we move the rectangle right by changing the offset from current (-120) to 120
-//        NumberAnimation {
-//            target: zeus
-//            duration: 1000
-//            property: "anchors.horizontalCenterOffset"
-//            easing.type: Easing.InOutQuad
-//            to: 150
-//        }
-//    }
 
 
 }
