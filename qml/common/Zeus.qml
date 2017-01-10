@@ -34,7 +34,6 @@ Image {
     ]
     transitions: [
         Transition {
-           //from: "original"; to "bend_left"
            NumberAnimation {
                 properties: "anchors.horizontalCenterOffset,anchors.leftMargin,anchors.topMargin"
                 duration: 200

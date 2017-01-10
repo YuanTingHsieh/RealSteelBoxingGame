@@ -2,10 +2,18 @@ import QtQuick 2.0
 
 Item {
 
-    id: punches_zeus
+    id: punches_atom
+
+    function handleLeft(punchType) {
+        if (punchType===0)
+            state = "left_punch"
+        else if (punchType===1)
+            state = "right_punch"
+        atomAttack()
+    }
 
     Image {
-        id: left_punch_zeus
+        id: left_punch_atom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 110
@@ -19,13 +27,13 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: {punches_zeus.state="left_punch"}
+            onPressed: handleLeft(0)
         }
 
     }
 
     Image {
-        id: right_punch_zeus
+        id: right_punch_atom
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 110
@@ -38,7 +46,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: {punches_zeus.state="right_punch"}
+            onPressed: punches_atom.state="defense" //handleLeft(1)
         }
     }
 
@@ -52,7 +60,7 @@ Item {
             name: "left_punch"
 
             PropertyChanges {
-                target: left_punch_zeus
+                target: left_punch_atom
                 anchors.horizontalCenterOffset: 0
                 anchors.verticalCenterOffset: 0
             }
@@ -60,9 +68,26 @@ Item {
         State {
             name: "right_punch"
             PropertyChanges {
-                target: right_punch_zeus
+                target: right_punch_atom
                 anchors.horizontalCenterOffset: 0
                 anchors.verticalCenterOffset: 0
+            }
+        },
+        State {
+            name: "defense"
+            PropertyChanges {
+                target: left_punch_atom
+                mirror: false
+                anchors.verticalCenterOffset: 150
+                anchors.horizontalCenterOffset: -20
+                rotation: -50
+            }
+            PropertyChanges {
+                target: right_punch_atom
+                mirror: true
+                anchors.verticalCenterOffset: 150
+                anchors.horizontalCenterOffset: 20
+                rotation: 50
             }
         }
 
@@ -73,11 +98,6 @@ Item {
             to: "right_punch"
             NumberAnimation {
                 properties: "anchors.horizontalCenterOffset,anchors.verticalCenterOffset"
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            RotationAnimation {
-                properties: "rotation"
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
@@ -93,11 +113,6 @@ Item {
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
-            RotationAnimation {
-                properties: "rotation"
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
             onRunningChanged: {
                 if (!running)
                     state="original";
@@ -110,12 +125,21 @@ Item {
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
-            RotationAnimation {
-                properties: "rotation"
+        },
+        Transition {
+            to: "defense"
+            NumberAnimation {
+                properties: "anchors.horizontalCenterOffset,anchors.verticalCenterOffset"
                 duration: 100
                 easing.type: Easing.InOutQuad
             }
+            RotationAnimation {
+                properties: "rotation"
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
         }
+
     ]
 
 

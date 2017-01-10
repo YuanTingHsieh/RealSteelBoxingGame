@@ -97,13 +97,15 @@ SceneBase {
             leftScore = 0
             rightScore = 0
             // since we did not define a width and height in the level item itself, we are doing it here
-            item.width = gameScene.width
-            item.height = gameScene.height
+            item.width = gameScene.gameWindowAnchorItem.width
+            item.height = gameScene.gameWindowAnchorItem.height
             // store the loaded level as activeLevel for easier access
             activeLevel = item
             // restarts the countdown
             countdown = 4
         }
+        anchors.left: gameScene.gameWindowAnchorItem.left
+        anchors.top: gameScene.gameWindowAnchorItem.top
         signal punchHit (int punchType)
         signal actionTake (int actionType)
         signal punchHit_zeus (int punchType)
@@ -111,14 +113,15 @@ SceneBase {
 
         onPunchHit: {
             if (gameRunning) {
-                if (punchType == 0)
-                {
-                    item.handleLeft()
-                }
-                else if (punchType ==1)
-                {
-                    item.handleLeft_2()
-                }
+//                if (punchType == 0)
+//                {
+//                    item.handleLeft()
+//                }
+//                else if (punchType ==1)
+//                {
+//                    item.handleLeft_2()
+//                }
+                handleAtomPunch(punchType)
             }
         }
         onPunchHit_zeus: {
@@ -149,8 +152,6 @@ SceneBase {
     Connections {
         // only connect if a level is loaded, to prevent errors
         target: activeLevel !== undefined ? activeLevel : null
-        // increase the score when the rectangle is clicked
-
         onLeftPunchPressed: {
             // only increase score when game is running
             if(gameRunning) {

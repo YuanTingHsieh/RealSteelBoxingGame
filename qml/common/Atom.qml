@@ -76,6 +76,14 @@ Item {
             PropertyChanges {target: right_leg; anchors.horizontalCenterOffset: -20;  anchors.leftMargin: 16; anchors.topMargin: 71; rotation: 0;}
             PropertyChanges {target: left_leg; anchors.horizontalCenterOffset: 7;  anchors.leftMargin: 44; anchors.topMargin: 71; rotation: -30;}
             PropertyChanges {target: body; rotation: -30;}
+        },
+        State {
+            name: "left_punch"
+            PropertyChanges {target: left_fist; width: 150; height: 150; anchors.horizontalCenterOffset: 31;  anchors.leftMargin: 58; anchors.topMargin: 11; visible: true;}
+        },
+        State {
+            name: "right_punch"
+            PropertyChanges {target: right_fist; width: 150; height: 150; anchors.horizontalCenterOffset: -44;  anchors.leftMargin: 58; anchors.topMargin: 11; visible: true; mirror: true;}
         }
 
     ]
@@ -93,6 +101,52 @@ Item {
                duration: 200
                easing.type: Easing.InOutQuad
            }
+        },
+        Transition {
+            to: "left_punch"
+            NumberAnimation {
+                 properties: "anchors.horizontalCenterOffset,anchors.leftMargin,anchors.topMargin"
+                 duration: 500
+                 easing.type: Easing.OutExpo
+             }
+            NumberAnimation {
+                properties: "width, height"
+                duration: 500
+                easing.type: Easing.OutExpo
+            }
+
+            RotationAnimation {
+                properties: "rotation"
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
+            onRunningChanged: {
+                if (!running)
+                    state="original";
+            }
+        },
+        Transition {
+            to: "right_punch"
+            NumberAnimation {
+                 properties: "anchors.horizontalCenterOffset,anchors.leftMargin,anchors.topMargin"
+                 duration: 500
+                 easing.type: Easing.OutExpo
+             }
+            NumberAnimation {
+                properties: "width, height"
+                duration: 500
+                easing.type: Easing.OutExpo
+            }
+
+            RotationAnimation {
+                properties: "rotation"
+                duration: 200
+                easing.type: Easing.InOutQuad
+            }
+            onRunningChanged: {
+                if (!running)
+                    state="original";
+            }
         }
 
     ]
@@ -216,6 +270,36 @@ Item {
         rotation: 0
         transformOrigin: Item.TopLeft
 
+    }
+
+    Image {
+        id: left_fist
+        source: "../img/atom/little_atom_fist_burned.png"
+        width: 25
+        height: 48
+        anchors.horizontalCenterOffset: 38
+        fillMode: Image.PreserveAspectFit
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 60
+        z: 3
+        rotation: -50
+        visible: false
+    }
+
+    Image {
+        id: right_fist
+        source: "../img/atom/little_atom_fist_burned.png"
+        width: 25
+        height: 48
+        anchors.horizontalCenterOffset: -35
+        fillMode: Image.PreserveAspectFit
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 60
+        z: 3
+        rotation: 50
+        visible: false
     }
 
 

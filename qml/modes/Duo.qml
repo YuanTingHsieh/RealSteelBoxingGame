@@ -1,219 +1,196 @@
 import QtQuick 2.0
-import VPlay 2.0
+//import VPlay 2.0
 import "../common" as Common
 import QtMultimedia 5.5
 
-Common.LevelBase {
+Item {
     id: duo_mode
-    levelName: "Duo Mode"    
+    // this will be displayed in the GameScene
+    property string levelName: "Duo Mode"
 
-    Common.Enemy {
-        id: atom
-        source: "../img/zeus_burned.png"
-        width: 160
-        height: 200
-        anchors.horizontalCenterOffset:  -135
-    }
+    anchors.left: parent.left
+    anchors.top: parent.top
+
+    signal leftPunchPressed
+    signal rightPunchPressed
+    signal atomAttack
+    signal zeusAttack
 
     SoundEffect {
         id: punchMusic
         source: "../img/punch2.wav"
     }
 
+    Common.Zeus {
+        id: zeus
+        width: 160
+        height: 200
+        anchors.horizontalCenterOffset: -parent.width/4
+    }
+
     Common.Punch{
+        id: punches_atom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenterOffset: -parent.width/4
+    }
+
+    Common.Atom {
+        id: atom
+        width: 110
+        height: 200
+        anchors.horizontalCenterOffset: parent.width/4
+        // below for debug use
+        MouseArea {
+            anchors.fill: parent
+            onPressed: atom.state = "right_punch"
+        }
+    }
+
+    Common.Punch_zeus {
         id: punches_zeus
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenterOffset: -120
+        anchors.horizontalCenterOffset: parent.width/4
     }
 
-//    Common.Punch {
-//        id: left_punch_zeus
-//        anchors.horizontalCenterOffset:  -190
-//        mirror: true
-//        transform: Rotation { origin.x: 48; origin.y: 48; angle: 45}
-
-//        MouseArea {
-//            anchors.fill: parent
-//            // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-//            onPressed: handleLeft()
-//        }
-
-//    }
-
-//    Common.Punch {
-//        id: right_punch_zeus
-//        anchors.horizontalCenterOffset:  -90
-//        transform: Rotation { origin.x: 48; origin.y: 48; angle: -45}
-
-//        MouseArea {
-//            anchors.fill: parent
-//            // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-//            onPressed: handleLeft_2()
-//        }
-//    }
-
-
-    //    Common.Enemy {
-    //        id: zeus
-    //        source: "../img/zeus_1500_burned.png"
-    //        width: 200
-    //        height: 200
-    //        anchors.horizontalCenterOffset:  150
-    //    }
-    Common.Atom {
-        id: zeus
-        width: 110
-        height: 200
-        anchors.horizontalCenterOffset:  140
-    }
-
-    Common.Punch_zeus {
-        id: left_punch_atom
-        anchors.horizontalCenterOffset:  70
-        transform: Rotation { origin.x: 48; origin.y: 48; angle: -110}
-
-        MouseArea {
-            anchors.fill: parent
-            // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: handleLeft()
-        }
-    }
-
-    Common.Punch_zeus {
-        id: right_punch_atom
-        anchors.horizontalCenterOffset:  210
-        transform: Rotation { origin.x: 48; origin.y: 48; angle: 110}
-        mirror: true
-        MouseArea {
-            anchors.fill: parent
-            // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: handleRight_2()
-        }
-    }
 
     function handleState_zeus(actionSide) {
         if (actionSide==2)
         {
-            atom.state="bend_left"
+            zeus.state="bend_left"
         }
         else if (actionSide==3)
         {
-            atom.state="original"
+            zeus.state="original"
         }
         else if (actionSide==4)
         {
-            atom.state="bend_right"
+            zeus.state="bend_right"
         }
     }
 
     function handleState(actionSide) {
-        if (zeus.state=="defense")
+        if (atom.state=="defense")
         {
             if (actionSide==1) // def att left midle right
             {
-                zeus.state="original"
+                atom.state="original"
             }
             else if (actionSide==2)
             {
-                zeus.state="left_def"
+                atom.state="left_def"
             }
             else if (actionSide==4)
             {
-                zeus.state="right_def"
+                atom.state="right_def"
             }
         }
-        else if (zeus.state=="original")
+        else if (atom.state=="original")
         {
             if (actionSide==0)
             {
-                zeus.state="defense"
+                atom.state="defense"
             }
             else if (actionSide==2)
             {
-                zeus.state="bend_left"
+                atom.state="bend_left"
             }
             else if (actionSide==4)
             {
-                zeus.state="bend_right"
+                atom.state="bend_right"
             }
         }
-        else if (zeus.state=="bend_left")
+        else if (atom.state=="bend_left")
         {
             if (actionSide==0)
             {
-                zeus.state="left_def"
+                atom.state="left_def"
             }
             else if (actionSide==3)
             {
-                zeus.state="original"
+                atom.state="original"
             }
             else if (actionSide==4)
             {
-                zeus.state="bend_right"
+                atom.state="bend_right"
             }
         }
-        else if (zeus.state=="bend_right")
+        else if (atom.state=="bend_right")
         {
             if (actionSide==0)
             {
-                zeus.state="right_def"
+                atom.state="right_def"
             }
             else if (actionSide==2)
             {
-                zeus.state="bend_left"
+                atom.state="bend_left"
             }
             else if (actionSide==3)
             {
-                zeus.state="original"
+                atom.state="original"
             }
         }
-        else if (zeus.state=="left_def")
+        else if (atom.state=="left_def")
         {
             if (actionSide==1)
             {
-                zeus.state="bend_left"
+                atom.state="bend_left"
             }
             else if (actionSide==3)
             {
-                zeus.state="defense"
+                atom.state="defense"
             }
             else if (actionSide==4)
             {
-                zeus.state="right_def"
+                atom.state="right_def"
             }
         }
-        else if (zeus.state=="right_def")
+        else if (atom.state=="right_def")
         {
             if (actionSide==1)
             {
-                zeus.state="bend_right"
+                atom.state="bend_right"
             }
             else if (actionSide==2)
             {
-                zeus.state="left_def"
+                atom.state="left_def"
             }
             else if (actionSide==3)
             {
-                zeus.state="defense"
+                atom.state="defense"
             }
 
         }
     }
 
-    function handleLeft() {
+    function handleAtomPunch(punchType) {
+        punches_atom.handleLeft(punchType)
+
+        if (atom.state=="original")
+        {
+            if (punchType===0)
+            {
+                atom.state = "left_punch"
+            }
+            else if (punchType===1)
+            {
+                atom.state = "right_punch"
+            }
+        }
+    }
+
+    // after atom attack, check the status of zeus!!!
+    onAtomAttack: {
         leftPunchPressed()
         punchMusic.play()
-        punches_zeus.state = "left_punch"
         right_red_screen.start()
     }
 
-    function handleLeft_2() {
-        leftPunchPressed()
+    onZeusAttack: {
+        rightPunchPressed()
         punchMusic.play()
-        //left_punching_right.start()
-        punches_zeus.state = "right_punch"
-        right_red_screen.start()
+        left_red_screen.start()
     }
 
     function handleRight() {
@@ -229,154 +206,5 @@ Common.LevelBase {
         right_punching_right.start()
         left_red_screen.start()
     }
-
-    SequentialAnimation {
-        id: right_punching_left
-        ParallelAnimation {
-            NumberAnimation {
-                target: left_punch_atom
-                property: "anchors.horizontalCenterOffset"
-                to: 130
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: left_punch_atom
-                property: "anchors.verticalCenterOffset"
-                to: 0
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-        ParallelAnimation {
-            NumberAnimation {
-                target: left_punch_atom
-                property: "anchors.horizontalCenterOffset"
-                to: 70
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: left_punch_atom
-                property: "anchors.verticalCenterOffset"
-                to: 135
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-
-    }
-
-    SequentialAnimation {
-        id: right_punching_right
-        ParallelAnimation {
-            NumberAnimation {
-                target: right_punch_atom
-                property: "anchors.horizontalCenterOffset"
-                to: 130
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: right_punch_atom
-                property: "anchors.verticalCenterOffset"
-                to: 0
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-        ParallelAnimation {
-            NumberAnimation {
-                target: right_punch_atom
-                property: "anchors.horizontalCenterOffset"
-                to: 210
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: right_punch_atom
-                property: "anchors.verticalCenterOffset"
-                to: 135
-                duration: 100
-                easing.type: Easing.InOutQuad
-            }
-        }
-
-    }
-
-//    SequentialAnimation {
-//        id: left_punching_left
-//        ParallelAnimation {
-//            NumberAnimation {
-//                target: left_punch_zeus
-//                property: "anchors.horizontalCenterOffset"
-//                to: -120
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//            NumberAnimation {
-//                target: left_punch_zeus
-//                property: "anchors.verticalCenterOffset"
-//                to: 0
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//        }
-//        ParallelAnimation {
-//            NumberAnimation {
-//                target: left_punch_zeus
-//                property: "anchors.horizontalCenterOffset"
-//                to: -190
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//            NumberAnimation {
-//                target: left_punch_zeus
-//                property: "anchors.verticalCenterOffset"
-//                to: 110
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//        }
-
-//    }
-
-//    SequentialAnimation {
-//        id: left_punching_right
-//        ParallelAnimation {
-//            NumberAnimation {
-//                target: right_punch_zeus
-//                property: "anchors.horizontalCenterOffset"
-//                to: -120
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//            NumberAnimation {
-//                target: right_punch_zeus
-//                property: "anchors.verticalCenterOffset"
-//                to: 0
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//        }
-//        ParallelAnimation {
-//            NumberAnimation {
-//                target: right_punch_zeus
-//                property: "anchors.horizontalCenterOffset"
-//                to: -90
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//            NumberAnimation {
-//                target: right_punch_zeus
-//                property: "anchors.verticalCenterOffset"
-//                to: 110
-//                duration: 100
-//                easing.type: Easing.InOutQuad
-//            }
-//        }
-
-//    }
-
 
 }
