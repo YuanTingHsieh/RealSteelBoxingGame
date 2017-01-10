@@ -140,7 +140,7 @@ SceneBase {
         }
         onActionTake_zeus: {
             if (gameRunning) {
-                    item.handleState_(actionType)
+                    item.handleState_zeus(actionType)
             }
         }
     }

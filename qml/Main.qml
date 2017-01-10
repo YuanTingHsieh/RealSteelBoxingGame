@@ -26,7 +26,7 @@ GameWindow {
         source: "img/strength_of_a_thousand_men.mp3"
         autoPlay: true
         loops: Audio.Infinite
-        // volume: 0.6
+        volume: 0.6
     }
 
     // menu scene

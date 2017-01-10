@@ -5,7 +5,7 @@ import QtMultimedia 5.5
 
 Common.LevelBase {
     id: duo_mode
-    levelName: "Duo Mode"
+    levelName: "Duo Mode"    
 
     Common.Enemy {
         id: atom
@@ -81,6 +81,21 @@ Common.LevelBase {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
             onPressed: handleRight_2()
+        }
+    }
+
+    function handleState_zeus(actionSide) {
+        if (actionSide==2)
+        {
+            atom.state="bend_left"
+        }
+        else if (actionSide==3)
+        {
+            atom.state="original"
+        }
+        else if (actionSide==4)
+        {
+            atom.state="bend_right"
         }
     }
 
@@ -182,28 +197,28 @@ Common.LevelBase {
         leftPunchPressed()
         punchMusic.play()
         left_punching_left.start()
-        left_red_screen.start()
+        right_red_screen.start()
     }
 
     function handleLeft_2() {
         leftPunchPressed()
         punchMusic.play()
         left_punching_right.start()
-        left_red_screen.start()
+        right_red_screen.start()
     }
 
     function handleRight() {
         rightPunchPressed()
         punchMusic.play()
         right_punching_left.start()
-        right_red_screen.start()
+        left_red_screen.start()
     }
 
     function handleRight_2() {
         rightPunchPressed()
         punchMusic.play()
         right_punching_right.start()
-        right_red_screen.start()
+        left_red_screen.start()
     }
 
     SequentialAnimation {
