@@ -139,7 +139,7 @@ void setup() {
 // ===                    MAIN PROGRAM LOOP                     ===
 // ================================================================
 
-void loop(int* deBounce, int* sideCounter, int& side, int& rfcommsock) {
+void loop(int* deBounce, int* sideCounter, int& side, int& defense, int& rfcommsock) {
     // if programming failed, don't try to do anything
     if (!dmpReady) return;
     // get current FIFO count
@@ -178,13 +178,19 @@ void loop(int* deBounce, int* sideCounter, int& side, int& rfcommsock) {
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             printf("ypr  %7.2f %7.2f %7.2f    ", ypr[0] * 180/M_PI, ypr[1] * 180/M_PI, ypr[2] * 180/M_PI);
             float yprUse = ypr[1]*180/M_PI;
-	    int sideThreshold = 3;
+	    int sideThreshold = 1;
 	    //printf("\n yprUse = %7.2f \n", yprUse);
 	    if (yprUse < -15.0) {
 		sideCounter[1] = 0;
 		sideCounter[0] += 1;
 		//printf("\n left side add 1, sideCounter[0]=%d \n", sideCounter[0]);
 		if (sideCounter[0] > sideThreshold) {
+			if (side != -1) {	
+				int status = send(rfcommsock, "side=left", 6, 0);
+				if(status < 0){
+					perror("ERROR, rfcomm send failed.\n");
+				}
+			}
 			side = -1;
 		//	printf("\n side = -1\n");
 		}
@@ -193,14 +199,44 @@ void loop(int* deBounce, int* sideCounter, int& side, int& rfcommsock) {
 		sideCounter[1] += 1;
 		//printf("\n right side add 1, sideCounter[1]=%d \n", sideCounter[1]);
 		if (sideCounter[1] > sideThreshold) {
+			if (side != 1) {	
+				int status = send(rfcommsock, "side=right", 6, 0);
+				if(status < 0){
+					perror("ERROR, rfcomm send failed.\n");
+				}
+			}
 			side = 1;
 		//	printf("\n side = 1\n");
 		}
 	    } else {
 		sideCounter[0] = 0;
 		sideCounter[1] = 0;
+		if (side != 0) {	
+			int status = send(rfcommsock, "side=middle", 6, 0);				if(status < 0){
+				perror("ERROR, rfcomm send failed.\n");
+			}
+		}
 		side = 0;
 	    }
+
+	    // detect attack or defense, 0 for attack and 1 for defense
+             float yprAction = ypr[2]*180/M_PI;
+             int ActionDeg = -30;
+             if ( yprAction < ActionDeg) {
+                 if (defense != 1) {
+			int status = send(rfcommsock, "act=defense", 6, 0);				if(status < 0){
+				perror("ERROR, rfcomm send failed.\n");
+			}
+		 }
+                 defense = 1;
+             } else {
+                 if (defense != 0) {
+			int status = send(rfcommsock, "act=attack", 6, 0);				if(status < 0){
+				perror("ERROR, rfcomm send failed.\n");
+			}
+                 }
+                 defense = 0;
+             }
 	
 	#endif
 
@@ -357,8 +393,9 @@ int main(int argc, char *argv[]) {
     int deBounce[4] = {0,0,0,0};
     int sideCounter[2] = {0,0};
     int side = 0;
+    int defense = 0;
     for (;;)
-        loop(deBounce, sideCounter, side, rfcommsock);
+        loop(deBounce, sideCounter, side, defense, rfcommsock);
 
     return 0;
 }
