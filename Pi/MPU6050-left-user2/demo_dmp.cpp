@@ -327,7 +327,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_rc addr = { 0 };
     int status, rfcommsock;    
     //char rfcommbuffer[255];
-    char dest[18] = "B8:27:EB:C6:D3:EE";
+    char dest[18] = "B8:27:EB:65:F2:38";
     // allocate a socket
     rfcommsock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
     // set the connection parameters (who to connect to)
