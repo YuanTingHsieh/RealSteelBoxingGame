@@ -145,7 +145,7 @@ void setup() {
 // ===                    MAIN PROGRAM LOOP                     ===
 // ================================================================
 
-void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
+void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, int& defense, int& actLeftPi, int& actState, int& rfcommsock) {
     // if programming failed, don't try to do anything
     if (!dmpReady) return;
     // get current FIFO count
@@ -189,63 +189,114 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
 	    //printf("\n yprUse = %7.2f \n", yprUse);
 	    if (yprUse < -sideDeg) {
 		//printf("\n left side add 1, sideCounter[0]=%d \n", sideCounter[0])
-		if (side != -1) {
+		/*if (side != -1) {
 			char message[100] = "Side=left";
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
 			printf("\n change side to left!");
 			//sleep(0.1);//delay(100);
-		}
+		}*/
 		side = -1;
 		//printf("\n side = -1\n");
 	    } else if (yprUse > sideDeg){
 		//printf("\n right side add 1, sideCounter[1]=%d \n", sideCounter[1]);
-		if (side != 1) {
+		/*if (side != 1) {
 			char message[100] = "Side=right";
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
 			printf("\n change side to right!");
 			//sleep(0.1);//delay(100);
-		}
+		}*/
 		side = 1;
 		//printf("\n side = 1\n");
 	    } else {
-		if (side != 0) {
+		/*if (side != 0) {
 			char message[100] = "Side=middle";
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
 			printf("\n change side to middle!");
 			//sleep(0.1);//delay(100);
-		}
-		side = 0;
-		
+		}*/
+		side = 0;	
 	    }
+	    
+	    if (side * sideLeftPi == 1 || (side == 0 && sideLeftPi == 0) ) {
+		if ( side==1 && sideLeftPi == 1) {
+			if (sideState != 1) {
+				char message[100] = "Side=right";
+				if ( send(sock, message, strlen(message), 0) < 0 ) {
+					puts("Send Failed!");
+				}
+				printf("\n change side to right! \n");	
+			}
+			sideState = 1;
+		} else if (side == -1 && sideLeftPi == -1) {
+			if (sideState != -1) {
+				char message[100] = "Side=left";
+				if ( send(sock, message, strlen(message), 0) < 0 ) {
+					puts("Send Failed!");
+				}
+				printf("\n change side to left! \n");	
+			}
+			sideState = -1;
+		} else {
+			if (sideState != 0) {
+				char message[100] = "Side=middle";
+				if ( send(sock, message, strlen(message), 0) < 0 ) {
+					puts("Send Failed!");
+				}
+				printf("\n change side to middle! \n");	
+			}
+			sideState = 0;
+		}
+	    }
+
 	    // detect attack or defense, 0 for attack and 1 for defense
 	    float yprAction = ypr[2]*180/M_PI;
 	    int ActionDeg = -30;
-	    if ( yprAction < -30) {
-		if (defense != 1) {
+	    if ( yprAction < ActionDeg) {
+		/*if (defense != 1) {
 			char message[100] = "Action=defense";
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
 			printf("\n change action to defense!");
 			//sleep(0.1);//delay(100);
-		}
+		}*/
 		defense = 1;	
 	    } else {
-		if (defense != 0) {
+		/*if (defense != 0) {
 			char message[100] = "Action=attack";
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
 			printf("\n change action to attack!");
 			//sleep(0.1);//delay(100);
-		}
+		}*/
 		defense = 0;
+	    }
+
+	    if (defense == 1 && actLeftPi == 1) {
+		if (actState != 1) {
+			char message[100] = "Action=defense";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change action to defense! \n");	
+		}
+		actState = 1;	
+	    } else {
+		if (actState != 0) {
+			char message[100] = "Action=attack";
+			if ( send(sock, message, strlen(message), 0) < 0 ) {
+				puts("Send Failed!");
+			}
+			printf("\n change action to attack! \n");	
+		}
+		actState = 0;	
 	    }
 	#endif
 
@@ -263,12 +314,14 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
 			if(deBounce[0] > deBounce[2]+500) {
-				printf("\n @@@ Right Hand HIT!");
-				char message[100] = "Right";
-				if ( send(sock, message, strlen(message), 0) < 0 ) {
-					puts("Send Failed!");
+				if (actState == 0 && defense == 0) { 
+					printf("\n @@@ Right Hand HIT!");
+					char message[100] = "Right";
+					if ( send(sock, message, strlen(message), 0) < 0 ) {
+						puts("Send Failed!");
+					}
+					sleep(0.1);//delay(100);
 				}
-				sleep(0.1);//delay(100);
 				deBounce[2] = deBounce[0];	
 			}
 		}
@@ -281,13 +334,31 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
 		} else if (len > 0)
 		{
 			rfcommbuffer[len] = '\0';
-			printf("\n @@@ Left Hand HIT!"); //  %s", rfcommbuffer);
-			char message[100] = "Left";
-			if ( send(sock, message, strlen(message), 0) < 0 ){
-				puts("Send FAILED");
-			}		
-
-			sleep(0.1);
+			//printf("\n rfcommbuffer=%s \n", &rfcommbuffer);
+			if ( rfcommbuffer[0] == 'h' && rfcommbuffer[1]=='i' && rfcommbuffer[2]=='t') {
+				if (actState == 0 && actLeftPi == 0) {
+					printf("\n @@@ Left Hand HIT!"); //  %s", rfcommbuffer);
+					char message[100] = "Left";
+					if ( send(sock, message, strlen(message), 0) < 0 ){
+						puts("Send FAILED");
+					}		
+					sleep(0.1);
+				}
+			} else if ( rfcommbuffer[0] == 's' && rfcommbuffer[1]=='i' && rfcommbuffer[2]=='d' && rfcommbuffer[3]=='e') {
+				if ( rfcommbuffer[5] == 'r' ) {
+					sideLeftPi = 1; 
+				} else if (  rfcommbuffer[5]=='l') {
+					sideLeftPi = -1;
+				} else {
+					sideLeftPi = 0;
+				}
+			} else if ( rfcommbuffer[0] == 'a' && rfcommbuffer[1]=='c' && rfcommbuffer[2]=='t') {
+				if (rfcommbuffer[4] == 'd') {
+					actLeftPi = 1;
+				} else {
+					actLeftPi = 0;
+				}
+			} 
 			//send(rfcommsock, "ATOK\r\n", 6, 0);
 		}
 // Part for wire connect between two mobile devices using WiringPi Library
@@ -472,9 +543,13 @@ int main(int argc, char *argv[]) {
     int deBounce[4] = {0,0,0,0};
     //int sideCounter[2] = {0,0};
     int side = 0;
+    int sideLeftPi = 0;
+    int sideState = 0;
     int defense = 0;
+    int actLeftPi = 0;
+    int actState = 0;
     for (;;)
-        loop(sock, deBounce, side, defense, rfcommsock);
+        loop(sock, deBounce, side, sideLeftPi, sideState, defense, actLeftPi, actState, rfcommsock);
 
     return 0;
 }
