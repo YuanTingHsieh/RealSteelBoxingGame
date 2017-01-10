@@ -263,12 +263,14 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
 			if(deBounce[0] > deBounce[2]+500) {
-				printf("\n @@@ Right Hand HIT!");
-				char message[100] = "Right";
-				if ( send(sock, message, strlen(message), 0) < 0 ) {
-					puts("Send Failed!");
+				if (defense == 0 ) {
+					printf("\n @@@ Right Hand HIT!");
+					char message[100] = "Right";
+					if ( send(sock, message, strlen(message), 0) < 0 ) {
+						puts("Send Failed!");
+					}
+					sleep(0.1);//delay(100);
 				}
-				sleep(0.1);//delay(100);
 				deBounce[2] = deBounce[0];	
 			}
 		}
@@ -281,13 +283,14 @@ void loop(int& sock, int* deBounce, int& side, int& defense, int& rfcommsock) {
 		} else if (len > 0)
 		{
 			rfcommbuffer[len] = '\0';
-			printf("\n @@@ Left Hand HIT!"); //  %s", rfcommbuffer);
-			char message[100] = "Left";
-			if ( send(sock, message, strlen(message), 0) < 0 ){
-				puts("Send FAILED");
-			}		
-
-			sleep(0.1);
+			if (defense == 0 ) {
+				printf("\n @@@ Left Hand HIT!"); //  %s", rfcommbuffer);
+				char message[100] = "Left";
+				if ( send(sock, message, strlen(message), 0) < 0 ){
+					puts("Send FAILED");
+				}		
+				sleep(0.1);
+			}
 			//send(rfcommsock, "ATOK\r\n", 6, 0);
 		}
 // Part for wire connect between two mobile devices using WiringPi Library
