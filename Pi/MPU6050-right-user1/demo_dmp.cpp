@@ -256,7 +256,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 
 	    // detect attack or defense, 0 for attack and 1 for defense
 	    float yprAction = ypr[2]*180/M_PI;
-	    int ActionDeg = -30;
+	    int ActionDeg = -60;
 	    if ( yprAction < ActionDeg) {
 		/*if (defense != 1) {
 			char message[100] = "Action=defense";

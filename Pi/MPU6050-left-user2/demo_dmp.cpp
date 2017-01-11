@@ -221,7 +221,7 @@ void loop(int* deBounce, int* sideCounter, int& side, int& defense, int& rfcomms
 
 	    // detect attack or defense, 0 for attack and 1 for defense
              float yprAction = ypr[2]*180/M_PI;
-             int ActionDeg = -30;
+             int ActionDeg = -60;
              if ( yprAction < ActionDeg) {
                  if (defense != 1) {
 			int status = send(rfcommsock, "act=defense", 6, 0);				if(status < 0){
