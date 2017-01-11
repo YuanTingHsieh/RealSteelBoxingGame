@@ -1,3 +1,5 @@
+// User1 Left
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -221,7 +223,7 @@ void loop(int* deBounce, int* sideCounter, int& side, int& defense, int& rfcomms
 
 	    // detect attack or defense, 0 for attack and 1 for defense
              float yprAction = ypr[2]*180/M_PI;
-             int ActionDeg = -60;
+             int ActionDeg = -45;
              if ( yprAction < ActionDeg) {
                  if (defense != 1) {
 			int status = send(rfcommsock, "act=defense", 6, 0);				if(status < 0){
