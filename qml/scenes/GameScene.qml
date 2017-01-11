@@ -110,41 +110,33 @@ SceneBase {
         signal actionTake (int actionType)
         signal punchHit_zeus (int punchType)
         signal actionTake_zeus (int actionType)
+        signal userDisconnect(int userType)
 
         onPunchHit: {
             if (gameRunning) {
-//                if (punchType == 0)
-//                {
-//                    item.handleLeft()
-//                }
-//                else if (punchType ==1)
-//                {
-//                    item.handleLeft_2()
-//                }
-                handleAtomPunch(punchType)
+                item.handleAtomPunch(punchType)
             }
         }
         onPunchHit_zeus: {
             if (gameRunning) {
-                if (punchType == 0)
-                {
-                    item.handleRight()
-                }
-                else if (punchType ==1)
-                {
-                    item.handleRight_2()
-                }
+                item.handleZeusPunch(punchType)
             }
         }
         onActionTake: {
             if (gameRunning) {
-                    item.handleState(actionType)
+                item.handleState(actionType)
             }
         }
         onActionTake_zeus: {
             if (gameRunning) {
-                    item.handleState_zeus(actionType)
+                item.handleState_zeus(actionType)
             }
+        }
+        onUserDisconnect: {
+            backButtonPressed()
+            activeLevel = undefined
+            activeLevelFileName = ""
+            countdown = -1
         }
     }
 

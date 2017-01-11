@@ -37,7 +37,7 @@ SceneBase {
         anchors.topMargin: 20
         spacing: 10
         MenuButton {
-            text: "Modes"
+            text: "Fight"
             onClicked: selectLevelPressed()
         }
         MenuButton {

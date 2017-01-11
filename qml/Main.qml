@@ -91,12 +91,12 @@ GameWindow {
         },
         State {
             name: "selectLevel"
-            PropertyChanges {target: selectLevelScene; opacity: 1}
+            PropertyChanges {target: selectLevelScene; opacity: 1; user1Ready: false; user2Ready: false; user1Opacity: 0.5; user2Opacity: 0.5;}
             PropertyChanges {target: window; activeScene: selectLevelScene}
             PropertyChanges {
                 target: playBackMusic;
                 muted: false
-            }
+            }           
         },
         State {
             name: "credits"
@@ -117,4 +117,5 @@ GameWindow {
             }
         }
     ]
+
 }

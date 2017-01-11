@@ -5,8 +5,6 @@ Item {
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.verticalCenter: parent.verticalCenter
     property int square: 10
-    width: 165
-    height: 300
 
     state: "original"
 
@@ -79,11 +77,25 @@ Item {
         },
         State {
             name: "left_punch"
-            PropertyChanges {target: left_fist; width: 150; height: 150; anchors.horizontalCenterOffset: 31;  anchors.leftMargin: 58; anchors.topMargin: 11; visible: true;}
+            PropertyChanges {target: left_fist; width: 100; height: 100; anchors.horizontalCenterOffset: 31;  anchors.leftMargin: 58; anchors.topMargin: 11; visible: true;}
+            PropertyChanges {
+                target: left_low
+                visible: false
+            }PropertyChanges {
+                target: left_up
+                visible: false
+            }
         },
         State {
             name: "right_punch"
-            PropertyChanges {target: right_fist; width: 150; height: 150; anchors.horizontalCenterOffset: -44;  anchors.leftMargin: 58; anchors.topMargin: 11; visible: true; mirror: true;}
+            PropertyChanges {target: right_fist; width: 100; height: 100; anchors.horizontalCenterOffset: -44;  anchors.leftMargin: 58; anchors.topMargin: 11; visible: true; mirror: true;}
+            PropertyChanges {
+                target: right_low
+                visible: false
+            }PropertyChanges {
+                target: right_up
+                visible: false
+            }
         }
 
     ]
@@ -106,15 +118,14 @@ Item {
             to: "left_punch"
             NumberAnimation {
                  properties: "anchors.horizontalCenterOffset,anchors.leftMargin,anchors.topMargin"
-                 duration: 500
+                 duration: 200
                  easing.type: Easing.OutExpo
              }
             NumberAnimation {
                 properties: "width, height"
-                duration: 500
+                duration: 200
                 easing.type: Easing.OutExpo
             }
-
             RotationAnimation {
                 properties: "rotation"
                 duration: 200
@@ -129,15 +140,14 @@ Item {
             to: "right_punch"
             NumberAnimation {
                  properties: "anchors.horizontalCenterOffset,anchors.leftMargin,anchors.topMargin"
-                 duration: 500
+                 duration: 200
                  easing.type: Easing.OutExpo
              }
             NumberAnimation {
                 properties: "width, height"
-                duration: 500
+                duration: 200
                 easing.type: Easing.OutExpo
             }
-
             RotationAnimation {
                 properties: "rotation"
                 duration: 200

@@ -14,19 +14,21 @@ public:
     ~Server();
 
 public slots:
-    //void setValue();
+    void ClientDisconnected();
     void acceptConnection();
     void startRead();
 
 signals:
     void punchChanged(int punchType);
     void actionChanged(int actionType);
-    //void sideChanged(int sideType);
+    void userConnected(int userType);
+    void userDisconnected(int userType);
 
 private:
-    int m_value;
+    int m_clients;
     QTcpServer server;
     QTcpSocket* client;
+    QList<QTcpSocket*> m_pClientSocketList;
 };
 
 #endif // SERVER_H

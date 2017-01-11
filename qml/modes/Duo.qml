@@ -23,9 +23,11 @@ Item {
 
     Common.Zeus {
         id: zeus
-        width: 160
-        height: 200
         anchors.horizontalCenterOffset: -parent.width/4
+        MouseArea {
+            anchors.fill: parent
+            onPressed: { handleZeusPunch(1); }
+        }
     }
 
     Common.Punch{
@@ -43,7 +45,7 @@ Item {
         // below for debug use
         MouseArea {
             anchors.fill: parent
-            onPressed: atom.state = "right_punch"
+            onPressed: { handleAtomPunch(1); }
         }
     }
 
@@ -56,17 +58,114 @@ Item {
 
 
     function handleState_zeus(actionSide) {
-        if (actionSide==2)
+        if (zeus.state=="defense")
         {
-            zeus.state="bend_left"
+            if (actionSide==1) // def att left midle right
+            {
+                zeus.state="original"
+                punches_zeus.state="original"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="left_def"
+                punches_zeus.state="left_def"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="right_def"
+                punches_zeus.state="right_def"
+            }
         }
-        else if (actionSide==3)
+        else if (zeus.state=="original")
         {
-            zeus.state="original"
+            if (actionSide==0)
+            {
+                zeus.state="defense"
+                punches_zeus.state="defense"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="bend_left"
+                punches_zeus.state="bend_left"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="bend_right"
+                punches_zeus.state="bend_right"
+            }
         }
-        else if (actionSide==4)
+        else if (zeus.state=="bend_left")
         {
-            zeus.state="bend_right"
+            if (actionSide==0)
+            {
+                zeus.state="left_def"
+                punches_zeus.state="left_def"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="original"
+                punches_zeus.state="original"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="bend_right"
+                punches_zeus.state="bend_right"
+            }
+        }
+        else if (zeus.state=="bend_right")
+        {
+            if (actionSide==0)
+            {
+                zeus.state="right_def"
+                punches_zeus.state="right_def"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="bend_left"
+                punches_zeus.state="bend_left"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="original"
+                punches_zeus.state="original"
+            }
+        }
+        else if (zeus.state=="left_def")
+        {
+            if (actionSide==1)
+            {
+                zeus.state="bend_left"
+                punches_zeus.state="bend_left"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="defense"
+                punches_zeus.state="defense"
+            }
+            else if (actionSide==4)
+            {
+                zeus.state="right_def"
+                punches_zeus.state="right_def"
+            }
+        }
+        else if (zeus.state=="right_def")
+        {
+            if (actionSide==1)
+            {
+                zeus.state="bend_right"
+                punches_zeus.state="bend_right"
+            }
+            else if (actionSide==2)
+            {
+                zeus.state="left_def"
+                punches_zeus.state="left_def"
+            }
+            else if (actionSide==3)
+            {
+                zeus.state="defense"
+                punches_zeus.state="defense"
+            }
+
         }
     }
 
@@ -76,14 +175,17 @@ Item {
             if (actionSide==1) // def att left midle right
             {
                 atom.state="original"
+                punches_atom.state="original"
             }
             else if (actionSide==2)
             {
                 atom.state="left_def"
+                punches_atom.state="left_def"
             }
             else if (actionSide==4)
             {
                 atom.state="right_def"
+                punches_atom.state="right_def"
             }
         }
         else if (atom.state=="original")
@@ -91,14 +193,17 @@ Item {
             if (actionSide==0)
             {
                 atom.state="defense"
+                punches_atom.state="defense"
             }
             else if (actionSide==2)
             {
                 atom.state="bend_left"
+                punches_atom.state="bend_left"
             }
             else if (actionSide==4)
             {
                 atom.state="bend_right"
+                punches_atom.state="bend_right"
             }
         }
         else if (atom.state=="bend_left")
@@ -106,14 +211,17 @@ Item {
             if (actionSide==0)
             {
                 atom.state="left_def"
+                punches_atom.state="left_def"
             }
             else if (actionSide==3)
             {
                 atom.state="original"
+                punches_atom.state="original"
             }
             else if (actionSide==4)
             {
                 atom.state="bend_right"
+                punches_atom.state="bend_right"
             }
         }
         else if (atom.state=="bend_right")
@@ -121,14 +229,17 @@ Item {
             if (actionSide==0)
             {
                 atom.state="right_def"
+                punches_atom.state="right_def"
             }
             else if (actionSide==2)
             {
                 atom.state="bend_left"
+                punches_atom.state="bend_left"
             }
             else if (actionSide==3)
             {
                 atom.state="original"
+                punches_atom.state="original"
             }
         }
         else if (atom.state=="left_def")
@@ -136,14 +247,17 @@ Item {
             if (actionSide==1)
             {
                 atom.state="bend_left"
+                punches_atom.state="bend_left"
             }
             else if (actionSide==3)
             {
                 atom.state="defense"
+                punches_atom.state="defense"
             }
             else if (actionSide==4)
             {
                 atom.state="right_def"
+                punches_atom.state="right_def"
             }
         }
         else if (atom.state=="right_def")
@@ -151,14 +265,17 @@ Item {
             if (actionSide==1)
             {
                 atom.state="bend_right"
+                punches_atom.state="bend_right"
             }
             else if (actionSide==2)
             {
                 atom.state="left_def"
+                punches_atom.state="left_def"
             }
             else if (actionSide==3)
             {
                 atom.state="defense"
+                punches_atom.state="defense"
             }
 
         }
@@ -180,6 +297,22 @@ Item {
         }
     }
 
+    function handleZeusPunch(punchType) {
+        punches_zeus.handleRight(punchType)
+
+        if (zeus.state=="original")
+        {
+            if (punchType===0)
+            {
+                zeus.state = "left_punch"
+            }
+            else if (punchType===1)
+            {
+                zeus.state = "right_punch"
+            }
+        }
+    }
+
     // after atom attack, check the status of zeus!!!
     onAtomAttack: {
         leftPunchPressed()
@@ -190,20 +323,6 @@ Item {
     onZeusAttack: {
         rightPunchPressed()
         punchMusic.play()
-        left_red_screen.start()
-    }
-
-    function handleRight() {
-        rightPunchPressed()
-        punchMusic.play()
-        right_punching_left.start()
-        left_red_screen.start()
-    }
-
-    function handleRight_2() {
-        rightPunchPressed()
-        punchMusic.play()
-        right_punching_right.start()
         left_red_screen.start()
     }
 

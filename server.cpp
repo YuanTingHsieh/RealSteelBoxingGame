@@ -9,7 +9,7 @@ Server::Server(QObject* parent, int portNumber): QObject(parent)
 
   server.listen(QHostAddress::Any, portNumber);
 
-  m_value = 0;
+  m_clients = 0;
 }
 
 Server::~Server()
@@ -20,9 +20,33 @@ Server::~Server()
 void Server::acceptConnection()
 {
   client = server.nextPendingConnection();
+  m_pClientSocketList.push_back(client);
 
   connect(client, SIGNAL(readyRead()),
     this, SLOT(startRead()));
+
+  m_clients += 1;
+
+  std::cout << "Accept connections "<< std::endl;
+  std::cout << "  # of total connections: "<<m_clients<< std::endl;
+
+  connect(client, &QTcpSocket::disconnected, this, &Server::ClientDisconnected);
+}
+
+void Server::ClientDisconnected()
+{
+    // client has disconnected, so remove from list
+    QTcpSocket* pClient = static_cast<QTcpSocket*>(QObject::sender());
+
+    m_clients -= 1;
+    std::cout << "Remove connections "<< std::endl;
+    std::cout << "  # of total connections: "<<m_clients<< std::endl;
+    for (int i=0; i<m_pClientSocketList.count(); ++i){
+        if (m_pClientSocketList[i]==pClient)
+            emit userDisconnected(i);
+    }
+    m_pClientSocketList.removeOne(pClient);
+
 }
 
 void Server::startRead()
@@ -37,6 +61,18 @@ void Server::startRead()
   // "Side=left"
   //client->close();
   std::string theSignal(buffer);
+  if (theSignal=="user1 both ready")
+  {
+      std::cout << "user 1 ready" << std::endl;
+      emit userConnected(0);
+  }
+  else if (theSignal=="user2 both ready")
+  {
+      std::cout << "user 2 ready" << std::endl;
+      emit userConnected(1);
+  }
+
+  // game logic
   if (theSignal=="Left")
   {
       std::cout << "Enter left" << std::endl;

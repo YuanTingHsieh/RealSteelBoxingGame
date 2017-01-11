@@ -27,7 +27,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: handleLeft(0)
+            onPressed: punches_atom.state="bend_left" //handleLeft(0)
         }
 
     }
@@ -89,6 +89,86 @@ Item {
                 anchors.horizontalCenterOffset: 20
                 rotation: 50
             }
+        },
+        State {
+            name: "left_def"
+            PropertyChanges {
+                target: punches_atom
+                rotation: 15
+            }
+            PropertyChanges {
+                target: left_punch_atom
+                mirror: false
+                anchors.verticalCenterOffset: 150
+                anchors.horizontalCenterOffset: -20
+                rotation: -50
+            }
+            PropertyChanges {
+                target: right_punch_atom
+                mirror: true
+                anchors.verticalCenterOffset: 150
+                anchors.horizontalCenterOffset: 20
+                rotation: 50
+            }
+        },
+        State {
+            name: "right_def"
+            PropertyChanges {
+                target: punches_atom
+                rotation: -15
+            }
+            PropertyChanges {
+                target: left_punch_atom
+                mirror: false
+                anchors.verticalCenterOffset: 150
+                anchors.horizontalCenterOffset: -20
+                rotation: -50
+            }
+            PropertyChanges {
+                target: right_punch_atom
+                mirror: true
+                anchors.verticalCenterOffset: 150
+                anchors.horizontalCenterOffset: 20
+                rotation: 50
+            }
+        },
+        State {
+            name: "bend_right"
+            PropertyChanges {
+                target: punches_atom
+                rotation: 15
+            }
+
+            PropertyChanges {
+                target: right_punch_atom
+                anchors.verticalCenterOffset: 87
+                anchors.horizontalCenterOffset: 111
+            }
+
+            PropertyChanges {
+                target: left_punch_atom
+                anchors.verticalCenterOffset: 88
+                anchors.horizontalCenterOffset: 27
+            }
+        },
+        State {
+            name: "bend_left"
+            PropertyChanges {
+                target: punches_atom
+                rotation: -15
+            }
+
+            PropertyChanges {
+                target: left_punch_atom
+                anchors.verticalCenterOffset: 81
+                anchors.horizontalCenterOffset: -130
+            }
+
+            PropertyChanges {
+                target: right_punch_atom
+                anchors.verticalCenterOffset: 79
+                anchors.horizontalCenterOffset: -46
+            }
         }
 
     ]
@@ -119,7 +199,6 @@ Item {
             }
         },
         Transition {
-            to: "original"
             NumberAnimation {
                 properties: "anchors.horizontalCenterOffset,anchors.verticalCenterOffset"
                 duration: 100
@@ -139,6 +218,7 @@ Item {
                 easing.type: Easing.InOutQuad
             }
         }
+
 
     ]
 
