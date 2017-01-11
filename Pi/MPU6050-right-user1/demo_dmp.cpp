@@ -1,3 +1,5 @@
+// User1 Right 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -256,7 +258,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 
 	    // detect attack or defense, 0 for attack and 1 for defense
 	    float yprAction = ypr[2]*180/M_PI;
-	    int ActionDeg = -30;
+	    int ActionDeg = -45;
 	    if ( yprAction < ActionDeg) {
 		/*if (defense != 1) {
 			char message[100] = "Action=defense";
@@ -285,7 +287,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
-			printf("\n change action to defense! \n");	
+			printf("\n change action to defense! left=%d, right=%d\n", actLeftPi, defense);	
 		}
 		actState = 1;	
 	    } else {
@@ -294,7 +296,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
-			printf("\n change action to attack! \n");	
+			printf("\n change action to attack! left=%d, right=%d\n", actLeftPi, defense);	
 		}
 		actState = 0;	
 	    }
@@ -312,8 +314,9 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 		int threshold = 5000;
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
+		//if ( (aaReal.y-aaReal_Last.y)<threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
-			if(deBounce[0] > deBounce[2]+500) {
+			if(deBounce[0] > deBounce[2]+1500) {
 				if (actState == 0 && defense == 0) { 
 					printf("\n @@@ Right Hand HIT!");
 					char message[100] = "Right";
@@ -537,7 +540,10 @@ int main(int argc, char *argv[]) {
 	}
  	//handle_connection(rfcommsock, scosock);
 		
-
+    // send message to host
+    char mess2host[100] = "user1 both ready";
+    if (send(sock, mess2host, strlen(mess2host), 0) < 0)
+	puts("ERROR Send to host FAILED");
 
     usleep(100000);
     int deBounce[4] = {0,0,0,0};

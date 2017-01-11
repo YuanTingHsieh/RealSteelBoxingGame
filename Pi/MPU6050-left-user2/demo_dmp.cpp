@@ -1,3 +1,5 @@
+// User2 Left
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -221,7 +223,7 @@ void loop(int* deBounce, int* sideCounter, int& side, int& defense, int& rfcomms
 
 	    // detect attack or defense, 0 for attack and 1 for defense
              float yprAction = ypr[2]*180/M_PI;
-             int ActionDeg = -30;
+             int ActionDeg = -45;
              if ( yprAction < ActionDeg) {
                  if (defense != 1) {
 			int status = send(rfcommsock, "act=defense", 6, 0);				if(status < 0){
@@ -253,7 +255,7 @@ void loop(int* deBounce, int* sideCounter, int& side, int& defense, int& rfcomms
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
-			if(deBounce[0] > deBounce[2]+500) {
+			if(deBounce[0] > deBounce[2]+1500) {
 				printf("\n @@@ Hand HIT!");
 /*
 				char message[1000] = "Right";
