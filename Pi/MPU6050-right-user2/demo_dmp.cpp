@@ -315,7 +315,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
-			if(deBounce[0] > deBounce[2]+500) {
+			if(deBounce[0] > deBounce[2]+1500) {
 				if (actState == 0 && defense == 0) { 
 					printf("\n @@@ Right Hand HIT!");
 					char message[100] = "Right";

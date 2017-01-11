@@ -287,7 +287,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
-			printf("\n change action to defense! \n");	
+			printf("\n change action to defense! left=%d, right=%d\n", actLeftPi, defense);	
 		}
 		actState = 1;	
 	    } else {
@@ -296,7 +296,7 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 			if ( send(sock, message, strlen(message), 0) < 0 ) {
 				puts("Send Failed!");
 			}
-			printf("\n change action to attack! \n");	
+			printf("\n change action to attack! left=%d, right=%d\n", actLeftPi, defense);	
 		}
 		actState = 0;	
 	    }
@@ -314,8 +314,9 @@ void loop(int& sock, int* deBounce, int& side, int& sideLeftPi, int& sideState, 
 		int threshold = 5000;
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
+		//if ( (aaReal.y-aaReal_Last.y)<threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
-			if(deBounce[0] > deBounce[2]+500) {
+			if(deBounce[0] > deBounce[2]+1500) {
 				if (actState == 0 && defense == 0) { 
 					printf("\n @@@ Right Hand HIT!");
 					char message[100] = "Right";

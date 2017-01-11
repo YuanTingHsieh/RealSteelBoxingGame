@@ -255,7 +255,7 @@ void loop(int* deBounce, int* sideCounter, int& side, int& defense, int& rfcomms
 	    	//char message[2000];
 		if ( abs(aaReal.x-aaReal_Last.x)>threshold || abs(aaReal.y-aaReal_Last.y)>threshold || abs(aaReal.z-aaReal_Last.z)>threshold ) {
 			//printf("\n %d, %d \n", deBounce[0], deBounce[2]);
-			if(deBounce[0] > deBounce[2]+500) {
+			if(deBounce[0] > deBounce[2]+1500) {
 				printf("\n @@@ Hand HIT!");
 /*
 				char message[1000] = "Right";
