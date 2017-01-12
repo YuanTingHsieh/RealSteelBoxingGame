@@ -69,7 +69,7 @@ SceneBase {
         anchors.right: selectLevelScene.gameWindowAnchorItem.right
         anchors.rightMargin: 10
         anchors.top: selectLevelScene.gameWindowAnchorItem.top
-        anchors.topMargin: 10
+        anchors.topMargin: 15
         onClicked: {
             backButtonPressed()
         }

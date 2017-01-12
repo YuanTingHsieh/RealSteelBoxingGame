@@ -6,15 +6,20 @@ import QtMultimedia 5.5
 
 SceneBase {
     id:gameScene
+
     // the filename of the current level gets stored here, it is used for loading the
     property string activeLevelFileName
+
     // the currently loaded level gets stored here
     property variant activeLevel
+
     // score
-    property int leftScore: 0
-    property int rightScore: 0
+    property int atomHealth: 0
+    property int zeusHealth: 0
+
     // countdown shown at level start
     property int countdown: 0
+
     // flag indicating if game is running
     property bool gameRunning: countdown == -1
 
@@ -26,7 +31,7 @@ SceneBase {
     OneArena {
         id: leftfield
         objectName: "Arena"
-        score: leftScore
+        score: atomHealth
         anchors.left: gameScene.gameWindowAnchorItem.left
         Rectangle {
             id: left_mask
@@ -44,8 +49,9 @@ SceneBase {
 
     OneArena {
         id: rightfield
-        score: rightScore
+        score: zeusHealth
         anchors.right: gameScene.gameWindowAnchorItem.right
+        inverse: true
         Rectangle {
             id: right_mask
             anchors.fill: parent
@@ -62,12 +68,12 @@ SceneBase {
 
     // back button to leave scene
     MenuButton {
-        text: "Back to menu"
+        text: "Back"
         // anchor the button to the gameWindowAnchorItem to be on the edge of the screen on any device
         anchors.right: gameScene.gameWindowAnchorItem.right
         anchors.rightMargin: 10
         anchors.top: gameScene.gameWindowAnchorItem.top
-        anchors.topMargin: 10
+        anchors.topMargin: 15
         onClicked: {
             backButtonPressed()
             activeLevel = undefined
@@ -76,16 +82,16 @@ SceneBase {
         }
     }
 
-    // name of the current level
-    Text {
-        anchors.left: gameScene.gameWindowAnchorItem.left
-        anchors.leftMargin: 10
-        anchors.top: gameScene.gameWindowAnchorItem.top
-        anchors.topMargin: 10
-        color: "white"
-        font.pixelSize: 20
-        text: activeLevel !== undefined ? activeLevel.levelName : ""
-    }
+//    // name of the current level
+//    Text {
+//        anchors.left: gameScene.gameWindowAnchorItem.left
+//        anchors.leftMargin: 10
+//        anchors.top: gameScene.gameWindowAnchorItem.top
+//        anchors.topMargin: 10
+//        color: "white"
+//        font.pixelSize: 20
+//        text: activeLevel !== undefined ? activeLevel.levelName : ""
+//    }
 
     // load levels at runtime
     Loader {
@@ -94,8 +100,8 @@ SceneBase {
         source: activeLevelFileName != "" ? "../modes/" + activeLevelFileName : ""
         onLoaded: {
             // reset the score
-            leftScore = 0
-            rightScore = 0
+            atomHealth = 100
+            zeusHealth = 100
             // since we did not define a width and height in the level item itself, we are doing it here
             item.width = gameScene.gameWindowAnchorItem.width
             item.height = gameScene.gameWindowAnchorItem.height
@@ -144,16 +150,16 @@ SceneBase {
     Connections {
         // only connect if a level is loaded, to prevent errors
         target: activeLevel !== undefined ? activeLevel : null
-        onLeftPunchPressed: {
+        onAtomScored: {
             // only increase score when game is running
             if(gameRunning) {
-                leftScore++
+                zeusHealth -= score
             }
         }
-        onRightPunchPressed: {
+        onZeusScored: {
             // only increase score when game is running
             if(gameRunning) {
-                rightScore++
+                atomHealth -= score
             }
         }
     }

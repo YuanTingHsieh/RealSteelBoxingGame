@@ -82,7 +82,7 @@ Item {
         visible: false
     }
 
-    state: "right_def"
+    state: "original"
     states: [
         State {
             name: "original"

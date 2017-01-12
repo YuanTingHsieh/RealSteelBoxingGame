@@ -21,7 +21,7 @@ SceneBase {
         anchors.right: creditsScene.gameWindowAnchorItem.right
         anchors.rightMargin: 10
         anchors.top: creditsScene.gameWindowAnchorItem.top
-        anchors.topMargin: 10
+        anchors.topMargin: 15
         onClicked: backButtonPressed()
     }
 

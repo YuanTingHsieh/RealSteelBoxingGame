@@ -11,8 +11,8 @@ Item {
     anchors.left: parent.left
     anchors.top: parent.top
 
-    signal leftPunchPressed
-    signal rightPunchPressed
+    signal atomScored(int score)
+    signal zeusScored(int score)
     signal atomAttack
     signal zeusAttack
 
@@ -354,8 +354,8 @@ Item {
 
     SequentialAnimation {
         id: atom_defense_block_show
-        NumberAnimation { target: atom_defense_block; properties: "opacity"; to: 0.6; }
-        NumberAnimation { target: atom_defense_block; properties: "opacity"; to: 0; }
+        NumberAnimation { target: atom_defense_block; properties: "opacity"; to: 0.6; duration: 100;}
+        NumberAnimation { target: atom_defense_block; properties: "opacity"; to: 0; duration: 100; }
     }
 
     SequentialAnimation {
@@ -373,7 +373,7 @@ Item {
         }
         else
         {
-            leftPunchPressed()
+            atomScored(2)
             punchMusic.play()
             right_red_screen.start()
         }
@@ -388,7 +388,7 @@ Item {
         }
         else
         {
-            rightPunchPressed()
+            zeusScored(2)
             punchMusic.play()
             left_red_screen.start()
         }
