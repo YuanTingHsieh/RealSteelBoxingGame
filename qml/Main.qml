@@ -72,6 +72,17 @@ GameWindow {
     GameScene {
         id: gameScene
         onBackButtonPressed: window.state = "selectLevel"
+        onToWinScene: {
+            winScene.winner = winner
+            window.state = "winscene"
+
+        }
+    }
+
+    // WinningScene
+    WinningScene {
+        id: winScene
+        onBackButtonPressed: { window.state = "menu" }
     }
 
     // menuScene is our first scene, so set the state to menu initially
@@ -114,6 +125,15 @@ GameWindow {
             PropertyChanges {
                 target: playBackMusic;
                 volume: 0.8
+            }
+        },
+        State {
+            name: "winscene"
+            PropertyChanges {target: winScene; opacity: 1; startPlay: true;}
+            PropertyChanges {target: window; activeScene: winScene}
+            PropertyChanges {
+                target: playBackMusic;
+                muted: true
             }
         }
     ]

@@ -64,8 +64,9 @@ int main(int argc, char *argv[])
 //    }
 //    qDebug() << out ;
 
-    auto object = engine.rootObjects()[0]->children()[10]->findChild<QObject*>(QLatin1Literal("Load_BABY"));
-    auto object_select = engine.rootObjects()[0]->children()[8];
+    // gamescene pos at 11, selectlevelscene at 9
+    auto object = engine.rootObjects()[0]->children()[11]->findChild<QObject*>(QLatin1Literal("Load_BABY"));
+    auto object_select = engine.rootObjects()[0]->children()[9];
     qDebug() << object;
 
 //    QVariant returnedValue;
@@ -82,7 +83,7 @@ int main(int argc, char *argv[])
     QObject::connect(&server, SIGNAL(actionChanged(int)), object, SIGNAL(actionTake(int)));
     QObject::connect(&server, SIGNAL(userDisconnected(int) ), object, SIGNAL(userDisconnected(int)));
 
-    Server server_zeus(0, 8888);
+    Server server_zeus(0, 8888); // user 1 zeus
     QObject::connect(&server_zeus, SIGNAL(userConnected(int)), object_select, SIGNAL(userConnected(int)) );
 
     QObject::connect(&server_zeus, SIGNAL(punchChanged(int)), object, SIGNAL(punchHit_zeus(int)));

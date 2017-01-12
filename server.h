@@ -26,6 +26,7 @@ signals:
 
 private:
     int m_clients;
+    int user;
     QTcpServer server;
     QTcpSocket* client;
     QList<QTcpSocket*> m_pClientSocketList;

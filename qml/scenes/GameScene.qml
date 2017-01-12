@@ -13,6 +13,8 @@ SceneBase {
     // the currently loaded level gets stored here
     property variant activeLevel
 
+    signal toWinScene(int winner)
+
     // score
     property int atomHealth: 0
     property int zeusHealth: 0
@@ -82,16 +84,17 @@ SceneBase {
         }
     }
 
-//    // name of the current level
-//    Text {
-//        anchors.left: gameScene.gameWindowAnchorItem.left
-//        anchors.leftMargin: 10
-//        anchors.top: gameScene.gameWindowAnchorItem.top
-//        anchors.topMargin: 10
-//        color: "white"
-//        font.pixelSize: 20
-//        text: activeLevel !== undefined ? activeLevel.levelName : ""
-//    }
+    // name of the current level
+    Text {
+        anchors.left: gameScene.gameWindowAnchorItem.left
+        anchors.leftMargin: 10
+        anchors.top: gameScene.gameWindowAnchorItem.top
+        anchors.topMargin: 10
+        color: "white"
+        font.pixelSize: 20
+        text: activeLevel !== undefined ? activeLevel.levelName : ""
+        visible: false
+    }
 
     // load levels at runtime
     Loader {
@@ -154,12 +157,16 @@ SceneBase {
             // only increase score when game is running
             if(gameRunning) {
                 zeusHealth -= score
+                if (zeusHealth==0)
+                    toWinScene(0)
             }
         }
         onZeusScored: {
             // only increase score when game is running
             if(gameRunning) {
                 atomHealth -= score
+                if (atomHealth==0)
+                    toWinScene(1)
             }
         }
     }

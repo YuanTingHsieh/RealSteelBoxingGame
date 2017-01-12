@@ -10,6 +10,10 @@ Server::Server(QObject* parent, int portNumber): QObject(parent)
   server.listen(QHostAddress::Any, portNumber);
 
   m_clients = 0;
+  if (portNumber==7777)
+      user=1;
+  else
+      user=0;
 }
 
 Server::~Server()
@@ -27,8 +31,8 @@ void Server::acceptConnection()
 
   m_clients += 1;
 
-  std::cout << "Accept connections "<< std::endl;
-  std::cout << "  # of total connections: "<<m_clients<< std::endl;
+  std::cout << "Accept connections of user "<< user+1 << std::endl;
+  //std::cout << "  # of total connections: "<<m_clients<< std::endl;
 
   connect(client, &QTcpSocket::disconnected, this, &Server::ClientDisconnected);
 }

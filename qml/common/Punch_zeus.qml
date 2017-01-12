@@ -1,16 +1,10 @@
 import QtQuick 2.0
-import QtMultimedia 5.5
 
 Item {
-    SoundEffect {
-        id: punchMusic
-        source: "../img/punch2.wav"
-    }
 
     id: punches_zeus
 
     function handleRight(punchType) {
-        punchMusic.play()
         if (punchType===0)
             state = "left_punch"
         else if (punchType===1)
@@ -79,6 +73,20 @@ Item {
                 target: right_punch_zeus
                 anchors.horizontalCenterOffset: 0
                 anchors.verticalCenterOffset: 0
+            }
+        },
+        State {
+            name: "defense"
+            PropertyChanges {
+                target: right_punch_zeus
+                anchors.verticalCenterOffset: 163
+                anchors.horizontalCenterOffset: 81
+            }
+
+            PropertyChanges {
+                target: left_punch_zeus
+                anchors.verticalCenterOffset: 161
+                anchors.horizontalCenterOffset: -58
             }
         },
         State {
