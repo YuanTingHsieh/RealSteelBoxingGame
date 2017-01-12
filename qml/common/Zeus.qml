@@ -82,7 +82,7 @@ Item {
         visible: false
     }
 
-    state: "original"
+    state: "right_def"
     states: [
         State {
             name: "original"
@@ -118,7 +118,7 @@ Item {
         State {
             name: "right_def"
             PropertyChanges { target: me; rotation: -30; }
-            PropertyChanges { target: left_arm; anchors.verticalCenterOffset: -17; anchors.horizontalCenterOffset: 56; rotation: 55; }
+            PropertyChanges { target: left_arm; anchors.verticalCenterOffset: -19; anchors.horizontalCenterOffset: 54; rotation: 55; }
             PropertyChanges { target: right_arm; anchors.verticalCenterOffset: -22; anchors.horizontalCenterOffset: -57; rotation: -55; }
         },
         State {

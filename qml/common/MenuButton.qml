@@ -10,6 +10,7 @@ Rectangle {
     color: "#e9e9e9"
     // round edges
     radius: 10
+    border.color: "black"
 
     // the horizontal margin from the Text element to the Rectangle at both the left and the right side.
     property int paddingHorizontal: 10
@@ -41,5 +42,7 @@ Rectangle {
         onClicked: { button.clicked(); playMusic.play(); }
         onPressed: button.opacity = 0.5
         onReleased: button.opacity = 1
+        onEntered: button.color = "yellow"
+        onExited: button.color = "#e9e9e9"
     }
 }

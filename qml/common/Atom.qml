@@ -23,7 +23,6 @@ Item {
         },
         State {
             name: "defense"
-
             PropertyChanges {target: right_low; anchors.horizontalCenterOffset: -14; anchors.leftMargin: 27; anchors.topMargin: 33; rotation: 0; source: "../img/atom_fist_burned.png";}
             PropertyChanges {target: right_up; anchors.horizontalCenterOffset: -32;  anchors.leftMargin: 9; anchors.topMargin: 23; rotation: -20;}
             PropertyChanges {target: left_low; anchors.horizontalCenterOffset: 15;  anchors.leftMargin: 58; anchors.topMargin: 33; rotation: 0; source: "../img/atom_fist_burned.png"; mirror: true;}
@@ -32,6 +31,7 @@ Item {
         },
         State {
             name: "left_def"
+
             PropertyChanges {target: right_low; anchors.horizontalCenterOffset: 16; anchors.leftMargin: 27; anchors.topMargin: 37; rotation: 30; source: "../img/atom_fist_burned.png";}
             PropertyChanges {target: right_up; anchors.horizontalCenterOffset: 3;  anchors.leftMargin: 9; anchors.topMargin: 23; rotation: 10;}
             PropertyChanges {target: left_low; anchors.horizontalCenterOffset: 47;  anchors.leftMargin: 58; anchors.topMargin: 41; rotation: 30; source: "../img/atom_fist_burned.png"; mirror: true;}
@@ -42,7 +42,7 @@ Item {
             PropertyChanges {target: body; rotation: 30;}
         },
         State {
-            name: "right_def"
+
             PropertyChanges {target: right_low; anchors.horizontalCenterOffset: -44; anchors.leftMargin: 27; anchors.topMargin: 39; rotation: -30; source: "../img/atom_fist_burned.png";}
             PropertyChanges {target: right_up; anchors.horizontalCenterOffset: -63;  anchors.leftMargin: 9; anchors.topMargin: 40; rotation: -50;}
             PropertyChanges {target: left_low; anchors.horizontalCenterOffset: -13;  anchors.leftMargin: 58; anchors.topMargin: 37; rotation: -30; source: "../img/atom_fist_burned.png"; mirror: true;}

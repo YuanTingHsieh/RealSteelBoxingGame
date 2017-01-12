@@ -110,7 +110,7 @@ SceneBase {
         signal actionTake (int actionType)
         signal punchHit_zeus (int punchType)
         signal actionTake_zeus (int actionType)
-        signal userDisconnect(int userType)
+        signal userDisconnected(int userType)
 
         onPunchHit: {
             if (gameRunning) {
@@ -132,7 +132,7 @@ SceneBase {
                 item.handleState_zeus(actionType)
             }
         }
-        onUserDisconnect: {
+        onUserDisconnected: {
             backButtonPressed()
             activeLevel = undefined
             activeLevelFileName = ""

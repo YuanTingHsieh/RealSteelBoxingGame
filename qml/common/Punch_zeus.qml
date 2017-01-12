@@ -34,7 +34,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: handleRight(0)
+            onPressed: handleRight(0)//{punches_zeus.state="left_def"} //handleRight(0)
         }
     }
 
@@ -53,7 +53,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: handleRight(1)
+            onPressed: handleRight(1)//{punches_zeus.state="right_def"}
         }
 
     }
@@ -79,6 +79,45 @@ Item {
                 target: right_punch_zeus
                 anchors.horizontalCenterOffset: 0
                 anchors.verticalCenterOffset: 0
+            }
+        },
+        State {
+            name: "right_def"
+            PropertyChanges {
+                target: punches_zeus
+                rotation: -20
+            }
+
+            PropertyChanges {
+                target: right_punch_zeus
+                anchors.verticalCenterOffset: 163
+                anchors.horizontalCenterOffset: 81
+            }
+
+            PropertyChanges {
+                target: left_punch_zeus
+                anchors.verticalCenterOffset: 161
+                anchors.horizontalCenterOffset: -58
+            }
+        },
+        State {
+            name: "left_def"
+            PropertyChanges {
+                target: punches_zeus
+                rotation: 20
+            }
+
+            PropertyChanges {
+                target: right_punch_zeus
+                y: 309
+                anchors.verticalCenterOffset: 161
+                anchors.horizontalCenterOffset: 80
+            }
+
+            PropertyChanges {
+                target: left_punch_zeus
+                anchors.verticalCenterOffset: 165
+                anchors.horizontalCenterOffset: -58
             }
         }
 

@@ -27,7 +27,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: punches_atom.state="bend_left" //handleLeft(0)
+            onPressed: handleLeft(0)//punches_atom.state="bend_left"
         }
 
     }
@@ -46,7 +46,7 @@ Item {
         MouseArea {
             anchors.fill: parent
             // since the level is loaded in the gameScene, and is therefore a child of the gameScene, you could also access gameScene.score here and modify it. But we want to keep the logic in the gameScene rather than spreading it all over the place
-            onPressed: punches_atom.state="defense" //handleLeft(1)
+            onPressed: handleLeft(1)//punches_atom.state="defense" //handleLeft(1)
         }
     }
 
