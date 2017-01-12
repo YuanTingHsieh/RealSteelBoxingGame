@@ -38,18 +38,7 @@ SceneBase {
             user2Ready = true
         }
         if (user1Ready && user2Ready)
-            delay(10, function() { levelPressed("Duo.qml"); })
-    }
-
-    // the "logo"
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: 10
-        y: 30
-        font.pixelSize: 40
-        color: "#e9e9e9"
-        text: (user1Ready && user2Ready) ? "Wait for connections..." : "Let's Fight"
-        font.family: "Copperplate Gothic Bold"
+            delay(50, function() { levelPressed("Duo.qml"); })
     }
 
     // background
@@ -60,6 +49,17 @@ SceneBase {
             source: '../img/mode_select.jpg'
             anchors.fill: parent
         }
+    }
+
+    // the "logo"
+    Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 10
+        y: 30
+        font.pixelSize: 20
+        color: "#e9e9e9"
+        text: "Wait for connections..."
+        font.family: "Copperplate Gothic Bold"
     }
 
     // back button to leave scene
@@ -83,14 +83,14 @@ SceneBase {
         UserStatus {
             id: user1
             text: "User 1 Connected!"
-            visible: (user1Ready && user2Ready) ?  false : true
+            //visible: (user1Ready && user2Ready) ?  false : true
             // for Debug
             onClicked: userConnected(0)
         }
         UserStatus {
             id: user2
             text: "User 2 Connected!"
-            visible: (user1Ready && user2Ready) ? false : true
+            //visible: (user1Ready && user2Ready) ? false : true
             // for Debug
             onClicked: userConnected(1)
         }
@@ -102,7 +102,7 @@ SceneBase {
             onClicked: {
                 levelPressed("Duo.qml")
             }
-            visible: (user1Ready && user2Ready) ? true : false
+            visible: (user1Ready && user2Ready) ? false : false
             enabled: visible
         }
     }
