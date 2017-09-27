@@ -1,5 +1,5 @@
 # Real Steel Fight Game
-#### This project is written in Qt, QML, C++ using V-Play Engine
+#### This project is written in Qt, QML, C++ using V-Play Engine for Embedded Systems Lab, NTU, Spring 2017
 #### Can run successfully on Windows 10 and Ubuntu 14.04 with Qt 5.7.1 and QtCreator 4.1.0 and latest V-play 2.9.2
 #### Demo on Youtube: [Here](https://www.youtube.com/watch?v=jziXI6g9NkU&feature=youtu.be)
 
